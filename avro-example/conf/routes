@@ -1,0 +1,4 @@
+POST    /example             me.tfeng.play.avro.BinaryIpcController.post(implementation = "example")
+POST    /points              me.tfeng.play.avro.BinaryIpcController.post(implementation = "points")
+POST    /example/:message    me.tfeng.play.avro.JsonIpcController.post(message, implementation = "example")
+POST    /points/:message     me.tfeng.play.avro.JsonIpcController.post(message, implementation = "points")
