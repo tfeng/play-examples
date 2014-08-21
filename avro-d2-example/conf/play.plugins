@@ -1,0 +1,3 @@
+50:me.tfeng.play.plugins.SpringPlugin
+100:me.tfeng.play.plugins.AvroPlugin
+150:me.tfeng.play.plugins.AvroD2Plugin
