@@ -17,7 +17,7 @@ import play.libs.ws.WSResponse;
 import controllers.protocols.Example;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:spring/*-test.xml"})
+@ContextConfiguration({"classpath*:spring/*.xml"})
 public class IntegrationTest {
 
   private static final int TIMEOUT = 10000;
