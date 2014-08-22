@@ -31,7 +31,7 @@ If a client is trusted and can utilize a library that implements the client-side
 
 ##### Dynamic Discovery
 
-D2 in this document stands for _dynamic discovery_. It enables a client to dynamically discover machines that provide a service. The [Play Avro D2 plugin](https://github.com/tfeng/play-plugins/tree/master/plugins/avro-d2) implements D2 by using ZooKeeper as a registry.
+D2 in this document stands for _dynamic discovery_. It enables a client to dynamically discover machines that provide a service. The [Play Avro D2 plugin](https://github.com/tfeng/play-plugins/tree/master/avro-d2-plugin) implements D2 by using ZooKeeper as a registry.
 
 ###### Service registration
 
@@ -87,7 +87,11 @@ $ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/example target/sc
 
 The case with D2 is more interesting. The ```routes``` file defines another endpoint (/client). When requested at this endpoint, the application uses the client library to connect to ZooKeeper and to dynamically discover machines. It only finds itself (because the same machine is registered in ZooKeeper at the start of the application, as mentioned above). Therefore, the request is routed back to the same application, but at the /example endpoint. The user observes the same result.
 
+<<<<<<< HEAD
+D2 in this document stands for _dynamic discovery_. It enables a client to dynamically discover machines that provide a service. The [Play Avro D2 plugin](https://github.com/tfeng/play-plugins/tree/master/avro-d2-plugin) implements such a mechanism on top of Avro IPC.
+=======
 ```bash
 $ curl http://localhost:9000/client
 message from client
 ```
+>>>>>>> f24838edf4c4164cd7c253d683d7ed03b99e5aba

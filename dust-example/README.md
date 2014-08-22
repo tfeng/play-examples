@@ -7,7 +7,7 @@ An example to show how to use [LinkedIn Dust.js](http://linkedin.github.io/dustj
 
 Run with ```activator run```.
 
-This example uses [Play Dust plugin](https://github.com/tfeng/play-plugins/tree/master/plugins/dust). The plugin compiles Dust templates (.js files) to JavaScripts in the compilation phase. At run time, those JavaScripts are loaded and rendered using Java 8's [Nashorn](http://openjdk.java.net/projects/nashorn/) engine.
+This example uses [Play Dust plugin](https://github.com/tfeng/play-plugins/tree/master/dust-plugin). The plugin compiles Dust templates (.js files) to JavaScripts in the compilation phase. At run time, those JavaScripts are loaded and rendered using Java 8's [Nashorn](http://openjdk.java.net/projects/nashorn/) engine.
 
 The server provides an endpoint to say "hello" to someone.
 
