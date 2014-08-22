@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+GET     /user/get                   @controllers.Application.userDetails()
+
+POST    /client/authenticate        @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateClient()
+POST    /user/authenticate          @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateUser()
+POST    /user/refresh               @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.refreshUserAccessToken()

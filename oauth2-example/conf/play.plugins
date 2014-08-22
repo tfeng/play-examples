@@ -1,0 +1,3 @@
+1000:me.tfeng.play.plugins.SpringPlugin
+2000:me.tfeng.play.plugins.SecurityPlugin
+3000:me.tfeng.play.plugins.OAuth2Plugin

@@ -1,4 +1,4 @@
-name := "avro-d2-plugin-example"
+name := "avro-d2-example"
 
 version := "1.0.0-SNAPSHOT"
 

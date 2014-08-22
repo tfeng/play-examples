@@ -14,9 +14,7 @@
 
   <context:component-scan base-package="controllers" />
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:application.conf" />
-  </bean>
+  <context:property-placeholder location="application.conf" />
 
   <util:map id="avroIpcInterfaceMap" value-type="java.lang.Class">
     <entry key="example" value="controllers.protocols.Example" />
