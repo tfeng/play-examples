@@ -1,7 +1,7 @@
 avro-example
 =========
 
-A simple example that demonstrates how to create an Avro IPC server and exchange messages with it.
+A simple example that demonstrates how to create an [Avro IPC](http://avro.apache.org/docs/current/spec.html#Protocol+Declaration) server and exchange messages with it.
 
 ---
 
