@@ -34,7 +34,7 @@ HTTP/1.1 401 Unauthorized
 Content-Length: 0
 ```
 
-To authenticate a user, one would use the client access token and a valid user name and password (predefined in this example).
+To authenticate a user, one would use the client access token and a valid username and password (predefined in this example).
 
 ```bash
 $ curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer f68570b0-0260-45ca-91db-1af37e6b6c73" -d '{"username": "test", "password": "password"}' http://localhost:9000/user/authenticate

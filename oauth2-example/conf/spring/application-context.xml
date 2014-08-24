@@ -9,8 +9,8 @@
 
   <context:annotation-config />
 
-  <context:component-scan base-package="controllers,security" />
+  <context:component-scan base-package="controllers, security" />
 
-  <context:property-placeholder location="application.conf" />
+  <context:property-placeholder location="security.properties" />
 
 </beans>

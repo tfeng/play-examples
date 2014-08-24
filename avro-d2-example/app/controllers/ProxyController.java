@@ -18,11 +18,20 @@
  * limitations under the License.
  */
 
-import me.tfeng.play.security.oauth2.OAuth2GlobalSettings;
+package controllers;
+
+import me.tfeng.play.plugins.AvroD2Plugin;
+import play.mvc.Result;
+import play.mvc.Results;
+import controllers.protocols.Example;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends OAuth2GlobalSettings {
+public class ProxyController {
 
+  public static Result invoke(String message) throws Exception {
+    Example proxy = AvroD2Plugin.getInstance().getClient(Example.class);
+    return Results.ok(proxy.echo(message));
+  }
 }

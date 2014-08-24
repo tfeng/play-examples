@@ -1,3 +1,5 @@
 100:me.tfeng.play.plugins.SpringPlugin
 200:me.tfeng.play.plugins.SecurityPlugin
 300:me.tfeng.play.plugins.OAuth2Plugin
+400:me.tfeng.play.plugins.AvroPlugin
+500:me.tfeng.play.plugins.AvroD2Plugin

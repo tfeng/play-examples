@@ -18,11 +18,20 @@
  * limitations under the License.
  */
 
-import me.tfeng.play.security.oauth2.OAuth2GlobalSettings;
+package beans;
+
+import org.springframework.stereotype.Component;
+
+import controllers.protocols.Example;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends OAuth2GlobalSettings {
+@Component("example")
+public class ExampleImpl implements Example {
 
+  @Override
+  public String echo(String message) {
+    return message;
+  }
 }

@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.spring.SpringGlobalSettings;
+import me.tfeng.play.security.oauth2.OAuth2GlobalSettings;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.zookeeper.server.ServerCnxnFactory;
@@ -40,7 +40,7 @@ import play.Logger.ALogger;
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends SpringGlobalSettings {
+public class Global extends OAuth2GlobalSettings {
 
   private static final ALogger LOG = Logger.of(Global.class);
 

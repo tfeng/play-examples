@@ -12,13 +12,13 @@
 
   <context:annotation-config />
 
-  <context:component-scan base-package="controllers" />
+  <context:component-scan base-package="beans" />
 
-  <context:property-placeholder location="application.conf" />
+  <context:property-placeholder />
 
-  <util:map id="avroIpcInterfaceMap" value-type="java.lang.Class">
-    <entry key="example" value="controllers.protocols.Example" />
-    <entry key="points" value="controllers.protocols.Points" />
+  <util:map id="avroProtocolImplementations" key-type="java.lang.Class">
+    <entry key="controllers.protocols.Example" value-ref="example" />
+    <entry key="controllers.protocols.Points" value-ref="points" />
   </util:map>
 
 </beans>

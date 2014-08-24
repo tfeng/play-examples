@@ -29,13 +29,13 @@ $ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/example target/sc
 ##### /points
 
 ```bash
-$ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr addPoint -data '{"point": {"x": 1.0, "y": 1.0}}'
+$ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr addPoint -data '{"point": {"x": 1.0, "y": 1.0}}'
 null
 
-$ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr addPoint -data '{"point": {"x": -0.5, "y": -0.5}}'
+$ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr addPoint -data '{"point": {"x": -0.5, "y": -0.5}}'
 null
 
-$ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr getNearestPoints -data '{"from": {"x": 0, "y": 0}, "k": 2}'
+$ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr getNearestPoints -data '{"from": {"x": 0, "y": 0}, "k": 2}'
 [ {
   "x" : -0.5,
   "y" : -0.5
@@ -44,10 +44,10 @@ $ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/point
   "y" : 1.0
 } ]
 
-$ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr clear -data ''
+$ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr clear -data ''
 null
 
-$ java -jar ~/Downloads/avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr getNearestPoints -data '{"from": {"x": 0, "y": 0}, "k": 2}'
+$ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/points target/schemata/points.avpr getNearestPoints -data '{"from": {"x": 0, "y": 0}, "k": 2}'
 Exception in thread "main" org.apache.avro.AvroRemoteException: {"k": 2}
 	at org.apache.avro.ipc.generic.GenericRequestor.readError(GenericRequestor.java:101)
 	at org.apache.avro.ipc.Requestor$Response.getResponse(Requestor.java:554)

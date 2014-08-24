@@ -12,9 +12,9 @@
 
   <context:annotation-config />
 
-  <context:component-scan base-package="beans" />
+  <context:component-scan base-package="beans, controllers, security" />
 
-  <context:property-placeholder location="avro-d2.properties" />
+  <context:property-placeholder location="avro-d2.properties, security.properties" />
 
   <util:map id="avroProtocolImplementations" key-type="java.lang.Class">
     <entry key="controllers.protocols.Example" value-ref="example" />

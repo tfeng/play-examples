@@ -18,11 +18,11 @@
  * limitations under the License.
  */
 
-import me.tfeng.play.security.oauth2.OAuth2GlobalSettings;
+import me.tfeng.play.spring.SpringGlobalSettings;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends OAuth2GlobalSettings {
+public class Global extends SpringGlobalSettings {
 
 }

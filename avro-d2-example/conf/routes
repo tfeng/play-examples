@@ -1,2 +1,2 @@
-POST    /example             me.tfeng.play.avro.BinaryIpcController.post(implementation = "example")
-GET     /client              controllers.ClientController.invoke(message ?= "message from client")
+POST    /example             me.tfeng.play.avro.BinaryIpcController.post(protocol = "controllers.protocols.Example")
+GET     /proxy               controllers.ProxyController.invoke(message ?= "message from client")

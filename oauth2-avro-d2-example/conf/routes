@@ -1,4 +1,5 @@
-GET     /user/get                   @controllers.Application.userDetails()
+POST    /example                    @controllers.Application.postAvroBinary()
+GET     /proxy                      @controllers.Application.invoke(message ?= "message from client")
 
 POST    /client/authenticate        @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateClient()
 POST    /user/authenticate          @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateUser()

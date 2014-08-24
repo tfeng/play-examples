@@ -85,9 +85,9 @@ $ java -jar avro-tools-1.7.7.jar rpcsend http://localhost:9000/example target/sc
 
 ##### Request with D2
 
-The case with D2 is more interesting. The ```routes``` file defines another endpoint (/client). When requested at this endpoint, the application uses the client library to connect to ZooKeeper and to dynamically discover machines. It only finds itself (because the same machine is registered in ZooKeeper at the start of the application, as mentioned above). Therefore, the request is routed back to the same application, but at the /example endpoint. The user observes the same result.
+The case with D2 is more interesting. The ```routes``` file defines another endpoint (/proxy). When requested at this endpoint, the application uses the client library to connect to ZooKeeper and to dynamically discover machines. It only finds itself (because the same machine is registered in ZooKeeper at the start of the application, as mentioned above). Therefore, the request is routed back to the same application, but at the /example endpoint. The user observes the same result.
 
 ```bash
-$ curl http://localhost:9000/client
-message from client
+$ curl "http://localhost:9000/proxy?message=hello"
+hello
 ```

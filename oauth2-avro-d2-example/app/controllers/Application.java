@@ -20,27 +20,35 @@
 
 package controllers;
 
-import me.tfeng.play.plugins.DustPlugin;
+import me.tfeng.play.avro.BinaryIpcController;
+import me.tfeng.play.plugins.AvroD2Plugin;
+import me.tfeng.play.security.oauth2.OAuth2Authentication;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import play.libs.F.Promise;
-import play.libs.Json;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.protocols.Example;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 @Service
+@OAuth2Authentication
 public class Application extends Controller {
 
-  public Promise<Result> index(String name) {
-    ObjectNode data = Json.newObject();
-    data.put("name", name);
-    return DustPlugin.getInstance().render("home/index", data).map(content -> Results.ok(content));
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Result invoke(String message) throws Exception {
+    Example proxy = AvroD2Plugin.getInstance().getClient(Example.class);
+    return Results.ok(proxy.echo(message));
+  }
+
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @BodyParser.Of(BodyParser.Raw.class)
+  public Result postAvroBinary() throws Throwable {
+    return BinaryIpcController.post(Example.class.getName());
   }
 }
