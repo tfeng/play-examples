@@ -14,14 +14,15 @@
 
   <context:component-scan base-package="beans" />
 
-  <context:property-placeholder location="avro-d2.properties" />
+  <context:property-placeholder location="mongodb.properties" />
 
   <util:map id="avro-plugin.protocol-implementations" key-type="java.lang.Class">
-    <entry key="controllers.protocols.Example" value-ref="example" />
+    <entry key="controllers.protocols.Points" value-ref="points" />
   </util:map>
 
-  <util:map id="avro-d2-plugin.protocol-paths" key-type="java.lang.Class">
-    <entry key="controllers.protocols.Example" value="/example" />
-  </util:map>
+  <bean id="mongoClient" class="com.mongodb.MongoClient">
+    <constructor-arg value="${mongodb-example.db-host}"/>
+    <constructor-arg value="${mongodb-example.db-port}"/>
+  </bean>
 
 </beans>

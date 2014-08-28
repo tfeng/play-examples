@@ -19,32 +19,34 @@
 
   <bean id="clientDetailsUserService"
         class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
-    <constructor-arg ref="clientDetailsService" />
+    <constructor-arg ref="oauth2-plugin.client-details-service" />
   </bean>
 
   <bean id="inMemoryTokenStore"
         class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore"/>
 
-  <bean id="tokenServices"
+  <bean id="oauth2-plugin.token-services"
         class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
     <property name="tokenStore" ref="inMemoryTokenStore" />
     <property name="supportRefreshToken" value="true" />
-    <property name="clientDetailsService" ref="clientDetailsService" />
+    <property name="clientDetailsService" ref="oauth2-plugin.client-details-service" />
   </bean>
+
+  <alias alias="oauth2-plugin.token-granter" name="oauth2TokenGranter" />
 
   <bean id="userApprovalHandler"
         class="org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler">
     <property name="tokenStore" ref="inMemoryTokenStore" />
     <property name="requestFactory">
       <bean class="org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory">
-        <constructor-arg ref="clientDetailsService" />
+        <constructor-arg ref="oauth2-plugin.client-details-service" />
       </bean>
     </property>
   </bean>
 
-  <bean id="oauth2AuthenticationManager"
+  <bean id="oauth2-plugin.authentication-manager"
         class="org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager">
-    <property name="tokenServices" ref="tokenServices" />
+    <property name="tokenServices" ref="oauth2-plugin.token-services" />
   </bean>
 
   <security:authentication-manager>
@@ -53,11 +55,11 @@
     </security:authentication-provider>
   </security:authentication-manager>
 
-  <security:authentication-manager id="clientAuthenticationManager">
+  <security:authentication-manager id="oauth2-plugin.client-authentication-manager">
     <security:authentication-provider user-service-ref="clientDetailsUserService" />
   </security:authentication-manager>
 
-  <oauth:client-details-service id="clientDetailsService">
+  <oauth:client-details-service id="oauth2-plugin.client-details-service">
     <oauth:client client-id="${security.trusted.client.id}"
                   secret="${security.trusted.client.secret}"
                   authorized-grant-types="authorization_code,implicit,refresh_token,client_credentials,password"
@@ -72,8 +74,8 @@
                   access-token-validity="864000" />
   </oauth:client-details-service>
 
-  <oauth:authorization-server client-details-service-ref="clientDetailsService"
-                              token-services-ref="tokenServices"
+  <oauth:authorization-server client-details-service-ref="oauth2-plugin.client-details-service"
+                              token-services-ref="oauth2-plugin.token-services"
                               user-approval-handler-ref="userApprovalHandler">
     <oauth:authorization-code />
     <oauth:implicit />

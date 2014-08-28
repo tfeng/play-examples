@@ -1,0 +1,2 @@
+POST    /points              me.tfeng.play.avro.BinaryIpcController.post(protocol = "controllers.protocols.Points")
+POST    /points/:message     me.tfeng.play.avro.JsonIpcController.post(message, protocol = "controllers.protocols.Points")

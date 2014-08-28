@@ -16,7 +16,7 @@
 
   <context:property-placeholder />
 
-  <util:map id="avroProtocolImplementations" key-type="java.lang.Class">
+  <util:map id="avro-plugin.protocol-implementations" key-type="java.lang.Class">
     <entry key="controllers.protocols.Example" value-ref="example" />
     <entry key="controllers.protocols.Points" value-ref="points" />
   </util:map>
