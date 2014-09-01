@@ -11,6 +11,6 @@
 
   <context:component-scan base-package="controllers" />
 
-  <context:property-placeholder location="application.conf" />
+  <context:property-placeholder />
 
 </beans>

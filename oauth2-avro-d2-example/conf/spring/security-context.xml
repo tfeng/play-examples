@@ -23,7 +23,7 @@
   </bean>
 
   <bean id="inMemoryTokenStore"
-        class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore"/>
+        class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore" />
 
   <bean id="oauth2-plugin.token-services"
         class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">

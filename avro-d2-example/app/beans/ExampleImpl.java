@@ -31,7 +31,7 @@ import controllers.protocols.Example;
 public class ExampleImpl implements Example {
 
   @Override
-  public String echo(String message) {
+  public CharSequence echo(CharSequence message) {
     return message;
   }
 }

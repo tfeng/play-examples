@@ -46,6 +46,8 @@ public class PointsImpl implements InitializingBean, Points {
     }
   }
 
+  private DBCollection collection;
+
   @Value("${mongodb-example.db-collection}")
   private String dbCollection;
 
@@ -54,6 +56,8 @@ public class PointsImpl implements InitializingBean, Points {
 
   @Autowired
   private MongoClient mongoClient;
+
+  private long startTime;
 
   @Override
   public Void addPoint(Point point) throws AvroRemoteException {
@@ -64,18 +68,18 @@ public class PointsImpl implements InitializingBean, Points {
 
   @Override
   public void afterPropertiesSet() throws Exception {
+    collection = mongoClient.getDB(dbName).getCollection(dbCollection);
+    startTime = System.currentTimeMillis();
     clear();
   }
 
   @Override
   public void clear() {
-    mongoClient.getDB(dbName).getCollection(dbCollection).drop();
+    collection.drop();
   }
 
   @Override
   public List<Point> getNearestPoints(Point from, int k) throws KTooLargeError {
-    DBCollection collection = mongoClient.getDB(dbName).getCollection(dbCollection);
-
     if (collection.count() < k) {
       throw KTooLargeError.newBuilder().setK(k).build();
     }
@@ -94,5 +98,15 @@ public class PointsImpl implements InitializingBean, Points {
       points.add(queue.poll());
     }
     return Lists.reverse(points);
+  }
+
+  protected double calculatePointsPerSecond() {
+    long current = System.currentTimeMillis();
+    long points = countPoints();
+    return (double) points * 1000 / (current - startTime);
+  }
+
+  protected long countPoints() {
+    return collection.count();
   }
 }

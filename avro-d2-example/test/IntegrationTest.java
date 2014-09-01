@@ -68,7 +68,7 @@ public class IntegrationTest {
         HttpTransceiver transceiver =
             new HttpTransceiver(new URL("http://localhost:" + port + "/example"));
         Example example = SpecificRequestor.getClient(Example.class, transceiver);
-        assertThat(example.echo("Test Message")).isEqualTo("Test Message");
+        assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

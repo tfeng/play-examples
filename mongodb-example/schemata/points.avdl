@@ -2,7 +2,7 @@
 protocol Points {
 
   record Point {
-    union { null, string } @javaAnnotation("me.tfeng.play.mongodb.Id") id;
+    union { null, @mongo-type("OBJECT_ID") string } @mongo-name("_id") id;
     double x = 0.0, y = 0.0;
   }
 

@@ -63,7 +63,7 @@ public class IntegrationTest {
       try {
         HttpTransceiver transceiver = new HttpTransceiver(new URL("http://localhost:3333/example"));
         Example example = SpecificRequestor.getClient(Example.class, transceiver);
-        assertThat(example.echo("Test Message")).isEqualTo("Test Message");
+        assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -77,7 +77,7 @@ public class IntegrationTest {
         Object response =
             sendJsonRequest("http://localhost:3333/example", Example.PROTOCOL, "echo",
                 "{\"message\": \"Test Message\"}");
-        assertThat(response).isEqualTo("Test Message");
+        assertThat(response.toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

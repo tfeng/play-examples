@@ -18,20 +18,31 @@
  * limitations under the License.
  */
 
-package controllers;
+package beans;
 
-import me.tfeng.play.plugins.AvroD2Plugin;
-import play.mvc.Result;
-import play.mvc.Results;
-import controllers.protocols.Example;
+import me.tfeng.play.mongodb.OplogItem;
+import me.tfeng.play.mongodb.OplogItemHandler;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import play.Logger;
+import play.Logger.ALogger;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class ProxyController {
+@Component
+public class StatusReporter implements OplogItemHandler {
 
-  public static Result invoke(String message) throws Exception {
-    Example proxy = AvroD2Plugin.getInstance().getClient(Example.class);
-    return Results.ok(proxy.echo(message).toString());
+  private static final ALogger LOG = Logger.of(StatusReporter.class);
+
+  @Autowired
+  private PointsImpl points;
+
+  @Override
+  public void handle(OplogItem oplogItem) {
+    LOG.info("Storage status: " + points.countPoints() + " points; "
+        + String.format("%.3f", points.calculatePointsPerSecond()) + " points/sec");
   }
 }

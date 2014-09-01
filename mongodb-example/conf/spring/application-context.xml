@@ -21,8 +21,14 @@
   </util:map>
 
   <bean id="mongoClient" class="com.mongodb.MongoClient">
-    <constructor-arg value="${mongodb-example.db-host}"/>
-    <constructor-arg value="${mongodb-example.db-port}"/>
+    <constructor-arg value="${mongodb-example.db-host}" />
+    <constructor-arg value="${mongodb-example.db-port}" />
+  </bean>
+
+  <bean class="me.tfeng.play.mongodb.OplogListener">
+    <property name="mongoClient" ref="mongoClient" />
+    <property name="namespace" value="${mongodb-example.db-name}.${mongodb-example.db-collection}" />
+    <property name="handler" ref="statusReporter" />
   </bean>
 
 </beans>
