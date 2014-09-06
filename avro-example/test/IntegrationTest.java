@@ -28,27 +28,31 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import me.tfeng.play.plugins.AvroPlugin;
+
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.Ipc;
 import org.apache.avro.ipc.generic.GenericRequestor;
-import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import play.libs.F.Promise;
+
 import com.google.common.collect.ImmutableList;
 
 import controllers.protocols.Example;
+import controllers.protocols.ExampleClient;
 import controllers.protocols.KTooLargeError;
 import controllers.protocols.Point;
 import controllers.protocols.Points;
+import controllers.protocols.PointsClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
@@ -57,13 +61,29 @@ import controllers.protocols.Points;
 @ContextConfiguration({"classpath*:spring/*.xml"})
 public class IntegrationTest {
 
+  private static final int TIMEOUT = 10000;
+
   @Test
   public void testExampleBinaryRequest() {
     running(testServer(3333), () -> {
       try {
-        HttpTransceiver transceiver = new HttpTransceiver(new URL("http://localhost:3333/example"));
-        Example example = SpecificRequestor.getClient(Example.class, transceiver);
+        Example example = AvroPlugin.getInstance().client(Example.class,
+            new URL("http://localhost:3333/example"));
         assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  @Test
+  public void testExampleBinaryRequestAsync() {
+    running(testServer(3333), () -> {
+      try {
+        ExampleClient example = AvroPlugin.getInstance().client(ExampleClient.class,
+            new URL("http://localhost:3333/example"));
+        Promise<CharSequence> promise = example.echo("Test Message");
+        assertThat(promise.get(TIMEOUT).toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -88,8 +108,8 @@ public class IntegrationTest {
   public void testPointsBinaryRequest() {
     running(testServer(3333), () -> {
       try {
-        HttpTransceiver transceiver = new HttpTransceiver(new URL("http://localhost:3333/points"));
-        Points points = SpecificRequestor.getClient(Points.class, transceiver);
+        Points points = AvroPlugin.getInstance().client(Points.class,
+            new URL("http://localhost:3333/points"));
         Point center = Point.newBuilder().setX(0.0).setY(0.0).build();
 
         // []
@@ -143,6 +163,105 @@ public class IntegrationTest {
         } catch (KTooLargeError e) {
           assertThat(e.getK()).isEqualTo(1);
         }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  @Test
+  public void testPointsBinaryRequestAsync() {
+    running(testServer(3333), () -> {
+      try {
+        PointsClient points = AvroPlugin.getInstance().client(PointsClient.class,
+            new URL("http://localhost:3333/points"));
+        Point center = Point.newBuilder().setX(0.0).setY(0.0).build();
+
+        // []
+        points.getNearestPoints(center, 1)
+            .map(response -> fail("KTooLargeError is expected"))
+            .recover(error -> {
+              assertThat(error).isInstanceOf(KTooLargeError.class);
+              assertThat(((KTooLargeError) error).getK()).isEqualTo(1);
+              return null;
+            })
+            .get(TIMEOUT);
+
+        // [one]
+        Point one = Point.newBuilder().setX(1.0).setY(1.0).build();
+        points.addPoint(one).get(TIMEOUT);
+        points.getNearestPoints(center, 1)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 2)
+            .map(response -> fail("KTooLargeError is expected"))
+            .recover(error -> {
+              assertThat(error).isInstanceOf(KTooLargeError.class);
+              assertThat(((KTooLargeError) error).getK()).isEqualTo(2);
+              return null;
+            })
+            .get(TIMEOUT);
+
+        // [one, five]
+        Point five = Point.newBuilder().setX(5.0).setY(5.0).build();
+        points.addPoint(five).get(TIMEOUT);
+        points.getNearestPoints(center, 1)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 2)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one, five));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 3)
+            .map(response -> fail("KTooLargeError is expected"))
+            .recover(error -> {
+              assertThat(error).isInstanceOf(KTooLargeError.class);
+              assertThat(((KTooLargeError) error).getK()).isEqualTo(3);
+              return null;
+            })
+            .get(TIMEOUT);
+
+        // [one, five, five]
+        points.addPoint(five).get(TIMEOUT);
+        points.getNearestPoints(center, 1)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 2)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one, five));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 3)
+            .map(response -> {
+              return assertThat(response).isEqualTo(ImmutableList.of(one, five, five));
+            })
+            .get(TIMEOUT);
+        points.getNearestPoints(center, 4)
+            .map(response -> fail("KTooLargeError is expected"))
+            .recover(error -> {
+              assertThat(error).isInstanceOf(KTooLargeError.class);
+              assertThat(((KTooLargeError) error).getK()).isEqualTo(4);
+              return null;
+            })
+            .get(TIMEOUT);
+
+        // []
+        points.clear().get(TIMEOUT);
+        points.getNearestPoints(center, 1)
+            .map(response -> fail("KTooLargeError is expected"))
+            .recover(error -> {
+              assertThat(error).isInstanceOf(KTooLargeError.class);
+              assertThat(((KTooLargeError) error).getK()).isEqualTo(1);
+              return null;
+            })
+            .get(TIMEOUT);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
