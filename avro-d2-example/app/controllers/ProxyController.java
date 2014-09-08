@@ -21,17 +21,18 @@
 package controllers;
 
 import me.tfeng.play.plugins.AvroD2Plugin;
+import play.libs.F.Promise;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.protocols.Example;
+import controllers.protocols.ExampleClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 public class ProxyController {
 
-  public static Result invoke(String message) throws Exception {
-    Example proxy = AvroD2Plugin.getInstance().getClient(Example.class);
-    return Results.ok(proxy.echo(message).toString());
+  public static Promise<Result> invoke(String message) throws Exception {
+    ExampleClient proxy = AvroD2Plugin.getInstance().client(ExampleClient.class);
+    return proxy.echo(message).map(response -> Results.ok(response.toString()));
   }
 }
