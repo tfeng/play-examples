@@ -1,5 +1,5 @@
 GET     /user/get                   @controllers.Application.userDetails()
 
-POST    /client/authenticate        @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateClient()
-POST    /user/authenticate          @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.authenticateUser()
-POST    /user/refresh               @me.tfeng.play.security.oauth2.OAuth2AuthenticationController.refreshUserAccessToken()
+POST    /client/authenticate        @controllers.AuthenticationController.authenticateClient()
+POST    /user/authenticate          @controllers.AuthenticationController.authenticateUser()
+POST    /user/refresh               @controllers.AuthenticationController.refreshUserAccessToken()

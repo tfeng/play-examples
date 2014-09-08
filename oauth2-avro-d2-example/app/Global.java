@@ -25,22 +25,31 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.security.oauth2.OAuth2GlobalSettings;
+import me.tfeng.play.spring.SpringGlobalSettings;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.ClientAuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 
 import play.Application;
 import play.Logger;
 import play.Logger.ALogger;
+import play.libs.F.Promise;
+import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
+import play.mvc.Results;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends OAuth2GlobalSettings {
+public class Global extends SpringGlobalSettings {
 
   private static final ALogger LOG = Logger.of(Global.class);
 
@@ -84,6 +93,21 @@ public class Global extends OAuth2GlobalSettings {
       cnxnFactory.startup(zkServer);
     } catch (Exception e) {
       throw new RuntimeException("Unable to start ZooKeeper server", e);
+    }
+  }
+
+  @Override
+  public Promise<Result> onError(RequestHeader request, Throwable t) {
+    Throwable cause = t.getCause();
+    if (cause instanceof AccessDeniedException
+        || cause instanceof AuthenticationException
+        || cause instanceof ClientAuthenticationException
+        || cause instanceof ClientRegistrationException) {
+      return Promise.pure(Results.unauthorized());
+    } else if (cause instanceof OAuth2Exception) {
+      return Promise.pure(Results.status(((OAuth2Exception) cause).getHttpErrorCode()));
+    } else {
+      return super.onError(request, t);
     }
   }
 
