@@ -24,11 +24,13 @@ import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
 import java.net.URL;
+import java.util.function.Consumer;
+
+import me.tfeng.play.plugins.AvroPlugin;
 
 import org.apache.avro.AvroRemoteException;
+import org.apache.avro.ipc.AsyncHttpTransceiver;
 import org.apache.avro.ipc.HttpTransceiver;
-import org.apache.avro.ipc.InternalHttpTransceiver;
-import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +44,10 @@ import play.libs.ws.WSResponse;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
+import com.ning.http.client.AsyncHttpClient;
 
 import controllers.protocols.Example;
+import controllers.protocols.ExampleClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
@@ -52,11 +56,24 @@ import controllers.protocols.Example;
 @ContextConfiguration({"classpath*:spring/*.xml"})
 public class IntegrationTest {
 
-  private static class TransceiverWithAuthorization extends InternalHttpTransceiver {
+  private static class TransceiverWithAuthorization extends AsyncHttpTransceiver {
+
+    private final String authorizationToken;
 
     public TransceiverWithAuthorization(URL url, String authorizationToken) {
-      super(url, connection ->
-          connection.setRequestProperty("Authorization", "Bearer " + authorizationToken));
+      super(url);
+      this.authorizationToken = authorizationToken;
+    }
+
+    @Override
+    protected Consumer<AsyncHttpClient.BoundRequestBuilder> getRequestPreparer(URL url,
+        byte[] body) {
+      Consumer<AsyncHttpClient.BoundRequestBuilder> superConsumer =
+          super.getRequestPreparer(url, body);
+      return builder -> {
+        superConsumer.accept(builder);
+        builder.setHeader("Authorization", "Bearer " + authorizationToken);
+      };
     }
   }
 
@@ -146,11 +163,14 @@ public class IntegrationTest {
         response = authenticateUser(clientAccessToken, "test", userPassword);
         String userAccessToken = response.asJson().findPath("accessToken").textValue();
 
-        Transceiver transceiver =
+        TransceiverWithAuthorization transceiver =
             new TransceiverWithAuthorization(new URL("http://localhost:" + port + "/example"),
                 userAccessToken);
-        Example example = SpecificRequestor.getClient(Example.class, transceiver);
+        Example example = AvroPlugin.getInstance().client(Example.class, transceiver);
         assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
+
+        ExampleClient exampleClient = AvroPlugin.getInstance().client(ExampleClient.class, transceiver);
+        assertThat(exampleClient.echo("Test Message").get(TIMEOUT).toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -183,10 +203,10 @@ public class IntegrationTest {
         WSResponse response = authenticateClient(trustedClientId, trustedClientSecret);
         String clientAccessToken = response.asJson().findPath("accessToken").textValue();
 
-        Transceiver transceiver =
+        TransceiverWithAuthorization transceiver =
             new TransceiverWithAuthorization(new URL("http://localhost:" + port + "/example"),
                 clientAccessToken);
-        Example example = SpecificRequestor.getClient(Example.class, transceiver);
+        Example example = AvroPlugin.getInstance().client(Example.class, transceiver);
         example.echo("Test Message");
         fail("AvroRemoteException is expected");
       } catch (AvroRemoteException e) {

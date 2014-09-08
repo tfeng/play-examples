@@ -27,11 +27,13 @@ import me.tfeng.play.security.oauth2.OAuth2Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import play.libs.F.Promise;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 import controllers.protocols.Example;
+import controllers.protocols.ExampleClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
@@ -41,9 +43,9 @@ import controllers.protocols.Example;
 public class Application extends Controller {
 
   @PreAuthorize("hasRole('ROLE_USER')")
-  public Result invoke(String message) throws Exception {
-    Example proxy = AvroD2Plugin.getInstance().getClient(Example.class);
-    return Results.ok(proxy.echo(message).toString());
+  public Promise<Result> invoke(String message) throws Exception {
+    ExampleClient proxy = AvroD2Plugin.getInstance().client(ExampleClient.class);
+    return proxy.echo(message).map(response -> Results.ok(response.toString()));
   }
 
   @PreAuthorize("hasRole('ROLE_USER')")
