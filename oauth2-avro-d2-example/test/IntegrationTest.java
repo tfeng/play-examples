@@ -166,10 +166,10 @@ public class IntegrationTest {
         TransceiverWithAuthorization transceiver =
             new TransceiverWithAuthorization(new URL("http://localhost:" + port + "/example"),
                 userAccessToken);
-        Example example = AvroPlugin.getInstance().client(Example.class, transceiver);
+        Example example = AvroPlugin.client(Example.class, transceiver);
         assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
 
-        ExampleClient exampleClient = AvroPlugin.getInstance().client(ExampleClient.class, transceiver);
+        ExampleClient exampleClient = AvroPlugin.client(ExampleClient.class, transceiver);
         assertThat(exampleClient.echo("Test Message").get(TIMEOUT).toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -206,7 +206,7 @@ public class IntegrationTest {
         TransceiverWithAuthorization transceiver =
             new TransceiverWithAuthorization(new URL("http://localhost:" + port + "/example"),
                 clientAccessToken);
-        Example example = AvroPlugin.getInstance().client(Example.class, transceiver);
+        Example example = AvroPlugin.client(Example.class, transceiver);
         example.echo("Test Message");
         fail("AvroRemoteException is expected");
       } catch (AvroRemoteException e) {

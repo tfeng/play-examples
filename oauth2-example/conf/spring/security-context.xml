@@ -10,8 +10,6 @@
                            http://www.springframework.org/schema/security/oauth2
                            http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
 
-  <bean id="securityContextStore" class="me.tfeng.play.security.CacheSecurityContextStore" />
-
   <bean id="passwordEncoder"
         class="org.springframework.security.crypto.password.StandardPasswordEncoder">
     <constructor-arg value="${security.password-encoder.secret}" />

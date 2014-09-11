@@ -59,7 +59,7 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
     ExecutionContext executionContext = Akka.system().dispatchers().lookup(executionContextId);
     return Promise.promise(() -> {
       PreAuthenticatedAuthenticationToken authRequest =
-          new PreAuthenticatedAuthenticationToken(token, "");
+          new PreAuthenticatedAuthenticationToken(token.toString(), "");
       OAuth2Authentication authResult =
           (OAuth2Authentication) authenticationManager.authenticate(authRequest);
 

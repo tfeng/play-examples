@@ -67,8 +67,8 @@ public class IntegrationTest {
   public void testExampleBinaryRequest() {
     running(testServer(3333), () -> {
       try {
-        Example example = AvroPlugin.getInstance().client(Example.class,
-            new URL("http://localhost:3333/example"));
+        Example example =
+            AvroPlugin.client(Example.class, new URL("http://localhost:3333/example"));
         assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -80,8 +80,8 @@ public class IntegrationTest {
   public void testExampleBinaryRequestAsync() {
     running(testServer(3333), () -> {
       try {
-        ExampleClient example = AvroPlugin.getInstance().client(ExampleClient.class,
-            new URL("http://localhost:3333/example"));
+        ExampleClient example =
+            AvroPlugin.client(ExampleClient.class, new URL("http://localhost:3333/example"));
         Promise<CharSequence> promise = example.echo("Test Message");
         assertThat(promise.get(TIMEOUT).toString()).isEqualTo("Test Message");
       } catch (Exception e) {
@@ -108,8 +108,7 @@ public class IntegrationTest {
   public void testPointsBinaryRequest() {
     running(testServer(3333), () -> {
       try {
-        Points points = AvroPlugin.getInstance().client(Points.class,
-            new URL("http://localhost:3333/points"));
+        Points points = AvroPlugin.client(Points.class, new URL("http://localhost:3333/points"));
         Point center = Point.newBuilder().setX(0.0).setY(0.0).build();
 
         // []
@@ -173,8 +172,8 @@ public class IntegrationTest {
   public void testPointsBinaryRequestAsync() {
     running(testServer(3333), () -> {
       try {
-        PointsClient points = AvroPlugin.getInstance().client(PointsClient.class,
-            new URL("http://localhost:3333/points"));
+        PointsClient points =
+            AvroPlugin.client(PointsClient.class, new URL("http://localhost:3333/points"));
         Point center = Point.newBuilder().setX(0.0).setY(0.0).build();
 
         // []

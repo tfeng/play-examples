@@ -44,7 +44,7 @@ public class Application extends Controller {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   public Promise<Result> invoke(String message) throws Exception {
-    ExampleClient proxy = AvroD2Plugin.getInstance().client(ExampleClient.class);
+    ExampleClient proxy = AvroD2Plugin.client(ExampleClient.class);
     return proxy.echo(message).map(response -> Results.ok(response.toString()));
   }
 
