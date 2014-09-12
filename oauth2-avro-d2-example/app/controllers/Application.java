@@ -22,7 +22,6 @@ package controllers;
 
 import me.tfeng.play.avro.BinaryIpcController;
 import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.security.oauth2.OAuth2Authentication;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,6 @@ import controllers.protocols.ExampleClient;
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 @Service
-@OAuth2Authentication
 public class Application extends Controller {
 
   @PreAuthorize("hasRole('ROLE_USER')")

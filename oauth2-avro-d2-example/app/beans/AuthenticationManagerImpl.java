@@ -24,28 +24,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import me.tfeng.play.security.oauth2.Authentication;
-import me.tfeng.play.security.oauth2.AuthenticationManagerClient;
+import me.tfeng.play.security.oauth2.AuthenticationError;
+import me.tfeng.play.security.oauth2.AuthenticationManager;
 import me.tfeng.play.security.oauth2.ClientAuthentication;
 import me.tfeng.play.security.oauth2.UserAuthentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import play.libs.Akka;
-import play.libs.F.Promise;
-import scala.concurrent.ExecutionContext;
-
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@Component("oauth2-plugin.authentication-manager")
-public class AuthenticationManagerImpl implements AuthenticationManagerClient {
+@Component
+public class AuthenticationManagerImpl implements AuthenticationManager {
 
   @Autowired
   @Qualifier("oauth2-example.authentication-manager")
@@ -55,9 +54,8 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
   private String executionContextId;
 
   @Override
-  public Promise<Authentication> authenticate(CharSequence token) {
-    ExecutionContext executionContext = Akka.system().dispatchers().lookup(executionContextId);
-    return Promise.promise(() -> {
+  public Authentication authenticate(CharSequence token) throws AuthenticationError {
+    try {
       PreAuthenticatedAuthenticationToken authRequest =
           new PreAuthenticatedAuthenticationToken(token.toString(), "");
       OAuth2Authentication authResult =
@@ -67,7 +65,9 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
       authentication.setClient(getClientAuthentication(authResult.getOAuth2Request()));
       authentication.setUser(getUserAuthentication(authResult.getUserAuthentication()));
       return authentication;
-    }, executionContext);
+    } catch (AuthenticationException | OAuth2Exception e) {
+      throw AuthenticationError.newBuilder().setMessage$(e.getMessage()).build();
+    }
   }
 
   private ClientAuthentication getClientAuthentication(OAuth2Request request) {

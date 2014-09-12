@@ -24,6 +24,7 @@ import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import me.tfeng.play.plugins.AvroPlugin;
@@ -66,10 +67,10 @@ public class IntegrationTest {
     }
 
     @Override
-    protected Consumer<AsyncHttpClient.BoundRequestBuilder> getRequestPreparer(URL url,
-        byte[] body) {
+    protected Consumer<AsyncHttpClient.BoundRequestBuilder> getRequestPreparer(URL url, byte[] body,
+        Map<String, String> extraHeaders) {
       Consumer<AsyncHttpClient.BoundRequestBuilder> superConsumer =
-          super.getRequestPreparer(url, body);
+          super.getRequestPreparer(url, body, extraHeaders);
       return builder -> {
         superConsumer.accept(builder);
         builder.setHeader("Authorization", "Bearer " + authorizationToken);

@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.tfeng.play.security.oauth2.OAuth2Authentication;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,7 +54,6 @@ import com.google.common.collect.ImmutableMap;
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 @Service
-@OAuth2Authentication
 @BodyParser.Of(BodyParser.Json.class)
 public class AuthenticationController extends Controller {
 

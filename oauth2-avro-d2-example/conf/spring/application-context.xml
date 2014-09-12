@@ -24,4 +24,9 @@
     <entry key="controllers.protocols.Example" value="/example" />
   </util:map>
 
+  <bean id="oauth2-plugin.authentication-manager" class="me.tfeng.play.factories.AvroLocalClientFactory">
+    <property name="bean" ref="authenticationManagerImpl" />
+    <property name="interfaceClass" value="me.tfeng.play.security.oauth2.AuthenticationManagerClient" />
+  </bean>
+
 </beans>
