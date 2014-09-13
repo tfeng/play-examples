@@ -82,10 +82,4 @@
     <oauth:password />
   </oauth:authorization-server>
 
-  <oauth:expression-handler id="oauth2ExpressionHandler" />
-
-  <security:global-method-security pre-post-annotations="enabled">
-    <security:expression-handler ref="oauth2ExpressionHandler" />
-  </security:global-method-security>
-
 </beans>
