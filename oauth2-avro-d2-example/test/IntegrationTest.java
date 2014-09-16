@@ -23,10 +23,12 @@ import static org.fest.assertions.Fail.fail;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.nio.ByteBuffer;
+import java.util.List;
 
+import me.tfeng.play.http.PostRequestPreparer;
 import me.tfeng.play.plugins.AvroPlugin;
 
 import org.apache.avro.AvroRemoteException;
@@ -39,13 +41,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.ning.http.client.AsyncHttpClient;
 
 import controllers.protocols.Example;
 import controllers.protocols.ExampleClient;
@@ -67,14 +69,21 @@ public class IntegrationTest {
     }
 
     @Override
-    protected Consumer<AsyncHttpClient.BoundRequestBuilder> getRequestPreparer(URL url, byte[] body,
-        Map<String, String> extraHeaders) {
-      Consumer<AsyncHttpClient.BoundRequestBuilder> superConsumer =
-          super.getRequestPreparer(url, body, extraHeaders);
-      return builder -> {
-        superConsumer.accept(builder);
+    public Promise<List<ByteBuffer>> asyncTransceive(List<ByteBuffer> request,
+        PostRequestPreparer postRequestPreparer) throws IOException {
+      return super.asyncTransceive(request, (builder, contentType, url) -> {
+        postRequestPreparer.prepare(builder, contentType, url);
         builder.setHeader("Authorization", "Bearer " + authorizationToken);
-      };
+      });
+    }
+
+    @Override
+    public List<ByteBuffer> transceive(List<ByteBuffer> request,
+        PostRequestPreparer postRequestPreparer) throws IOException {
+      return super.transceive(request, (builder, contentType, url) -> {
+        postRequestPreparer.prepare(builder, contentType, url);
+        builder.setHeader("Authorization", "Bearer " + authorizationToken);
+      });
     }
   }
 
