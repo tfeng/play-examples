@@ -53,7 +53,7 @@ public class PointsImpl implements Points {
   @Override
   public List<Point> getNearestPoints(Point from, int k) throws KTooLargeError {
     if (points.size() < k) {
-      throw KTooLargeError.newBuilder().setK(k).build();
+      throw KTooLargeError.newBuilder().setValue("k is too large").setK(k).build();
     }
 
     PriorityQueue<Point> queue = new PriorityQueue<>(new DescendingPointComparator(from));

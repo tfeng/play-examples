@@ -81,7 +81,7 @@ public class PointsImpl implements InitializingBean, Points {
   @Override
   public List<Point> getNearestPoints(Point from, int k) throws KTooLargeError {
     if (collection.count() < k) {
-      throw KTooLargeError.newBuilder().setK(k).build();
+      throw KTooLargeError.newBuilder().setValue("k is too large").setK(k).build();
     }
 
     DBCursor cursor = collection.find();

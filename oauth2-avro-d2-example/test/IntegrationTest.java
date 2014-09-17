@@ -72,7 +72,9 @@ public class IntegrationTest {
     public Promise<List<ByteBuffer>> asyncTransceive(List<ByteBuffer> request,
         PostRequestPreparer postRequestPreparer) throws IOException {
       return super.asyncTransceive(request, (builder, contentType, url) -> {
-        postRequestPreparer.prepare(builder, contentType, url);
+        if (postRequestPreparer != null) {
+          postRequestPreparer.prepare(builder, contentType, url);
+        }
         builder.setHeader("Authorization", "Bearer " + authorizationToken);
       });
     }
@@ -81,13 +83,15 @@ public class IntegrationTest {
     public List<ByteBuffer> transceive(List<ByteBuffer> request,
         PostRequestPreparer postRequestPreparer) throws IOException {
       return super.transceive(request, (builder, contentType, url) -> {
-        postRequestPreparer.prepare(builder, contentType, url);
+        if (postRequestPreparer != null) {
+          postRequestPreparer.prepare(builder, contentType, url);
+        }
         builder.setHeader("Authorization", "Bearer " + authorizationToken);
       });
     }
   }
 
-  private static final int TIMEOUT = 10000;
+  private static final int TIMEOUT = 10000000;
 
   @Value("${avro-d2-plugin.server-port}")
   private int port;
