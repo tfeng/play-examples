@@ -21,12 +21,10 @@
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
+import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import play.libs.Json;
 import play.libs.ws.WS;
@@ -40,11 +38,9 @@ import com.google.common.collect.ImmutableMap;
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:spring/*.xml"})
-public class IntegrationTest {
+public class IntegrationTest extends AbstractSpringTest {
 
-  private static final int TIMEOUT = 10000;
+  private static final int TIMEOUT = Integer.MAX_VALUE;
 
   @Value("${security.trusted.client.id}")
   private String trustedClientId;

@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import me.tfeng.play.plugins.AvroPlugin;
+import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.Protocol;
@@ -39,9 +40,6 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.ipc.Ipc;
 import org.apache.avro.ipc.generic.GenericRequestor;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import play.libs.F.Promise;
 
@@ -57,11 +55,9 @@ import controllers.protocols.PointsClient;
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:spring/*.xml"})
-public class IntegrationTest {
+public class IntegrationTest extends AbstractSpringTest {
 
-  private static final int TIMEOUT = 10000;
+  private static final int TIMEOUT = Integer.MAX_VALUE;
 
   @Test
   public void testExampleBinaryRequest() {

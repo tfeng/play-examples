@@ -30,16 +30,14 @@ import java.util.List;
 
 import me.tfeng.play.http.PostRequestPreparer;
 import me.tfeng.play.plugins.AvroPlugin;
+import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.AsyncHttpTransceiver;
 import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import play.libs.F.Promise;
 import play.libs.Json;
@@ -55,9 +53,7 @@ import controllers.protocols.ExampleClient;
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:spring/*.xml"})
-public class IntegrationTest {
+public class IntegrationTest extends AbstractSpringTest {
 
   private static class TransceiverWithAuthorization extends AsyncHttpTransceiver {
 
@@ -91,7 +87,7 @@ public class IntegrationTest {
     }
   }
 
-  private static final int TIMEOUT = 10000000;
+  private static final int TIMEOUT = Integer.MAX_VALUE;
 
   @Value("${avro-d2-plugin.server-port}")
   private int port;

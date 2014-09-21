@@ -24,13 +24,12 @@ import static play.test.Helpers.testServer;
 
 import java.net.URL;
 
+import me.tfeng.play.spring.test.AbstractSpringTest;
+
 import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
@@ -39,11 +38,9 @@ import controllers.protocols.Example;
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:spring/*.xml"})
-public class IntegrationTest {
+public class IntegrationTest extends AbstractSpringTest {
 
-  private static final int TIMEOUT = 10000;
+  private static final int TIMEOUT = Integer.MAX_VALUE;
 
   @Value("${avro-d2-plugin.server-port}")
   private int port;

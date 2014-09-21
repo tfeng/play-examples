@@ -8,9 +8,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   "me.tfeng.play-plugins" % "oauth2-plugin" % "0.2.0-SNAPSHOT",
   javaWs % "test",
-  "org.springframework" % "spring-test" % "4.0.3.RELEASE" % "test"
+  "me.tfeng.play-plugins" % "spring-test" % "0.2.0-SNAPSHOT" % "test"
 )
 
 AvroD2.settings
-
-fork in Test := false

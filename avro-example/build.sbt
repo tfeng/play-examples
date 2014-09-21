@@ -4,8 +4,6 @@ version := "1.0.0-SNAPSHOT"
 
 lazy val root = project in file(".") enablePlugins(PlayJava)
 
-libraryDependencies += "org.springframework" % "spring-test" % "4.0.3.RELEASE" % "test"
+libraryDependencies += "me.tfeng.play-plugins" % "spring-test" % "0.2.0-SNAPSHOT" % "test"
 
 Avro.settings
-
-fork in Test := false
