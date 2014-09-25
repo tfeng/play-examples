@@ -6,7 +6,7 @@ lazy val root = project in file(".") enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
   javaWs % "test",
-  "me.tfeng.play-plugins" % "spring-test" % "0.2.0" % "test"
+  "me.tfeng.play-plugins" % "spring-test" % "0.2.1" % "test"
 )
 
 Dust.settings
