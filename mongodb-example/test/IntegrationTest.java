@@ -104,7 +104,7 @@ public class IntegrationTest extends AbstractSpringTest {
 
         response = WS.url("http://localhost:3333/points/addPoint")
             .setContentType("avro/json")
-            .post("{\"point\": {\"id\": {\"string\": \"53fdf8429436cecb91d26cfa\"}, \"x\": 2.1, \"y\": 1.8}}")
+            .post("{\"point\": {\"id\": \"53fdf8429436cecb91d26cfa\", \"x\": 2.1, \"y\": 1.8}}")
             .get(TIMEOUT);
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getBody()).isEqualTo("null");

@@ -65,19 +65,7 @@ switched to db test
 After some points are added, one may issue a request to compute the k-nearest points.
 ```bash
 $ curl -X POST -H "Content-Type: avro/json" -d '{"from": {"x": 0, "y": 0}, "k": 2}' http://localhost:9000/points/getNearestPoints
-[ {
-  "id" : {
-    "string" : "540039e730042fdb3309bd49"
-  },
-  "x" : -0.5,
-  "y" : -0.5
-}, {
-  "id" : {
-    "string" : "5400397730042fdb3309bd48"
-  },
-  "x" : 1.0,
-  "y" : 1.0
-} ]
+[{"id":"540039e730042fdb3309bd49","x":-0.5,"y":-0.5},{"id":"5400397730042fdb3309bd48","x":1.0,"y":1.0}]
 ```
 
 #### ID
@@ -85,7 +73,7 @@ $ curl -X POST -H "Content-Type: avro/json" -d '{"from": {"x": 0, "y": 0}, "k": 
 MongoDB automatically generates an ID for each object. The ID is stored in the "_id" field. In the Avro schema, the ID may be represented by a different name. Annotation ```me.tfeng.play.mongodb.Id``` is provided for the purpose of associating the "_id" field with an Avro field. See [schemata/points.avdl](https://github.com/tfeng/play-examples/blob/master/mongodb-example/schemata/points.avdl) for example. Because the field is defined as union of null and string, the user may omit it while sending a request to add a point. Alternative, the user may also specify an ID, provided that no record already exists in MongoDB with the same ID.
 
 ```bash
-$ curl -X POST -H "Content-Type: avro/json" -d '{"point": {"id": {"string": "5400397730042fdb3309bd48"}, "x": -0.5, "y": -0.5}}' http://localhost:9000/points/addPoint
+$ curl -X POST -H "Content-Type: avro/json" -d '{"point": {"id": "5400397730042fdb3309bd48", "x": -0.5, "y": -0.5}}' http://localhost:9000/points/addPoint
 null
 ```
 

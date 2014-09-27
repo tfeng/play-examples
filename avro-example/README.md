@@ -83,23 +83,13 @@ $ curl -X POST -H "Content-Type: avro/json" -d '{"point": {"x": -0.5, "y": -0.5}
 null
 
 $ curl -X POST -H "Content-Type: avro/json" -d '{"from": {"x": 0, "y": 0}, "k": 2}' http://localhost:9000/points/getNearestPoints
-[ {
-  "x" : -0.5,
-  "y" : -0.5
-}, {
-  "x" : 1.0,
-  "y" : 1.0
-} ]
+[{"x":-0.5,"y":-0.5},{"x":1.0,"y":1.0}]
 
 $ curl -X POST -H "Content-Type: avro/json" http://localhost:9000/points/clear
 null
 
 $ curl -X POST -H "Content-Type: avro/json" -d '{"from": {"x": 0, "y": 0}, "k": 2}' http://localhost:9000/points/getNearestPoints
-{
-  "controllers.protocols.KTooLargeError" : {
-    "k" : 2
-  }
-}
+{"controllers.protocols.KTooLargeError":{"k":2}}
 ```
 
 One may observe that the response to the last curl request is not exactly the same as that to the last request made by Avro command-line tool. The reason is the lack of a standard way to respond with an exception, so the [Avro Play plugin](https://github.com/tfeng/play-plugins/tree/master/avro-plugin) goes ahead and implements a custom protocol. The status code of the response in this case is ```HTTP/1.1 400 Bad Request``` instead of ```HTTP/1.1 200 OK``` (the status code for all Avro binary requests, as specified in Avro documentation). The data in the Avro Json response includes the exception class and the data.
