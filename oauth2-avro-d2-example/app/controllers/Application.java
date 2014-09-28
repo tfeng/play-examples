@@ -48,7 +48,7 @@ public class Application extends Controller {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @BodyParser.Of(BodyParser.Raw.class)
-  public Result postAvroBinary() throws Throwable {
+  public Promise<Result> postAvroBinary() throws Throwable {
     return BinaryIpcController.post(Example.class.getName());
   }
 }
