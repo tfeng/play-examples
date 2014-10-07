@@ -5,7 +5,7 @@ version := "1.0.0-SNAPSHOT"
 lazy val root = project in file(".") enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
-  "me.tfeng.play-plugins" % "oauth2-plugin" % "0.2.6",
+  "me.tfeng.play-plugins" % "oauth2-plugin" % "0.2.8",
   javaWs % "test",
-  "me.tfeng.play-plugins" % "spring-test" % "0.2.6" % "test"
+  "me.tfeng.play-plugins" % "spring-test" % "0.2.8" % "test"
 )
