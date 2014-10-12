@@ -7,7 +7,6 @@ import java.util.PriorityQueue;
 
 import me.tfeng.play.mongodb.RecordConverter;
 
-import org.apache.avro.AvroRemoteException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +59,7 @@ public class PointsImpl implements InitializingBean, Points {
   private long startTime;
 
   @Override
-  public Void addPoint(Point point) throws AvroRemoteException {
+  public Void addPoint(Point point) {
     DBCollection collection = mongoClient.getDB(dbName).getCollection(dbCollection);
     collection.insert(RecordConverter.toDbObject(point));
     return null;

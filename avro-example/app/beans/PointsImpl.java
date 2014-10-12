@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import org.apache.avro.AvroRemoteException;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -40,7 +39,7 @@ public class PointsImpl implements Points {
   private final List<Point> points = new ArrayList<>();
 
   @Override
-  public Void addPoint(Point point) throws AvroRemoteException {
+  public Void addPoint(Point point) {
     points.add(point);
     return null;
   }

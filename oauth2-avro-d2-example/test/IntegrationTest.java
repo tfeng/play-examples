@@ -32,10 +32,8 @@ import me.tfeng.play.http.PostRequestPreparer;
 import me.tfeng.play.plugins.AvroPlugin;
 import me.tfeng.play.spring.test.AbstractSpringTest;
 
-import org.apache.avro.AvroRemoteException;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.ipc.AsyncHttpTransceiver;
-import org.apache.avro.ipc.HttpTransceiver;
-import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -66,7 +64,7 @@ public class IntegrationTest extends AbstractSpringTest {
 
     @Override
     public Promise<List<ByteBuffer>> asyncTransceive(List<ByteBuffer> request,
-        PostRequestPreparer postRequestPreparer) throws IOException {
+        PostRequestPreparer postRequestPreparer) {
       return super.asyncTransceive(request, (builder, contentType, url) -> {
         if (postRequestPreparer != null) {
           postRequestPreparer.prepare(builder, contentType, url);
@@ -191,12 +189,11 @@ public class IntegrationTest extends AbstractSpringTest {
   public void testDirectRequestMissingAuthorization() {
     running(testServer(port), () -> {
       try {
-        HttpTransceiver transceiver =
-            new HttpTransceiver(new URL("http://localhost:" + port + "/example"));
-        Example example = SpecificRequestor.getClient(Example.class, transceiver);
+        URL url = new URL("http://localhost:" + port + "/example");
+        Example example = AvroPlugin.client(Example.class, url);
         example.echo("Test Message");
-        fail("AvroRemoteException is expected");
-      } catch (AvroRemoteException e) {
+        fail("AvroRuntimeException is expected");
+      } catch (AvroRuntimeException e) {
         assertThat(e.getCause().getMessage())
             .isEqualTo("Server returned HTTP response code: 401 for URL: http://localhost:" + port
                 + "/example");
@@ -218,8 +215,8 @@ public class IntegrationTest extends AbstractSpringTest {
                 clientAccessToken);
         Example example = AvroPlugin.client(Example.class, transceiver);
         example.echo("Test Message");
-        fail("AvroRemoteException is expected");
-      } catch (AvroRemoteException e) {
+        fail("AvroRuntimeException is expected");
+      } catch (AvroRuntimeException e) {
         assertThat(e.getCause().getMessage())
             .isEqualTo("Server returned HTTP response code: 401 for URL: http://localhost:" + port
                 + "/example");
