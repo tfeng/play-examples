@@ -1,0 +1,11 @@
+@namespace("controllers.protocols")
+protocol Message {
+
+  record UserMessage {
+    string subject;
+    string action;
+    string object;
+  }
+
+  void send(UserMessage message) oneway;
+}

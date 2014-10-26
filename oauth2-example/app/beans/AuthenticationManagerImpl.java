@@ -20,6 +20,7 @@
 
 package beans;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
   private String executionContextId;
 
   @Override
-  public Promise<Authentication> authenticate(CharSequence token) {
+  public Promise<Authentication> authenticate(String token) {
     ExecutionContext executionContext = Akka.system().dispatchers().lookup(executionContextId);
     return Promise.promise(() -> {
       PreAuthenticatedAuthenticationToken authRequest =
@@ -71,10 +72,9 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
   }
 
   private ClientAuthentication getClientAuthentication(OAuth2Request request) {
-    List<CharSequence> authorities = request.getAuthorities().stream()
+    List<String> authorities = request.getAuthorities().stream()
         .map(authority -> authority.getAuthority()).collect(Collectors.toList());
-    List<CharSequence> scopes = request.getScope().stream()
-        .map(scope -> scope).collect(Collectors.toList());
+    List<String> scopes = new ArrayList<>(request.getScope());
     ClientAuthentication client = new ClientAuthentication();
     client.setId(request.getClientId());
     client.setAuthorities(authorities);
@@ -87,7 +87,7 @@ public class AuthenticationManagerImpl implements AuthenticationManagerClient {
     if (authentication == null) {
       return null;
     } else {
-      List<CharSequence> authorities = authentication.getAuthorities().stream()
+      List<String> authorities = authentication.getAuthorities().stream()
           .map(authority -> authority.getAuthority()).collect(Collectors.toList());
       UserAuthentication user = new UserAuthentication();
       user.setId(authentication.getName());

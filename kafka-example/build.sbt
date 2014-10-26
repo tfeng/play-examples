@@ -1,11 +1,13 @@
-name := "mongodb-example"
+name := "kafka-example"
 
 version := "1.0.0-SNAPSHOT"
 
 lazy val root = project in file(".") enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
-  "me.tfeng.play-plugins" % "mongodb-plugin" % "0.3.1-SNAPSHOT",
+  "commons-io" % "commons-io" % "2.4",
+  "me.tfeng.play-plugins" % "kafka-plugin" % "0.3.1-SNAPSHOT",
+  "org.apache.zookeeper" % "zookeeper" % "3.4.6",
   javaWs % "test",
   "me.tfeng.play-plugins" % "spring-test" % "0.3.1-SNAPSHOT" % "test"
 )

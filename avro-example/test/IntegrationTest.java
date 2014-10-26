@@ -65,7 +65,7 @@ public class IntegrationTest extends AbstractSpringTest {
       try {
         Example example =
             AvroPlugin.client(Example.class, new URL("http://localhost:3333/example"));
-        assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
+        assertThat(example.echo("Test Message")).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -78,8 +78,8 @@ public class IntegrationTest extends AbstractSpringTest {
       try {
         ExampleClient example =
             AvroPlugin.client(ExampleClient.class, new URL("http://localhost:3333/example"));
-        Promise<CharSequence> promise = example.echo("Test Message");
-        assertThat(promise.get(TIMEOUT).toString()).isEqualTo("Test Message");
+        Promise<String> promise = example.echo("Test Message");
+        assertThat(promise.get(TIMEOUT)).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -93,7 +93,7 @@ public class IntegrationTest extends AbstractSpringTest {
         Object response =
             sendJsonRequest("http://localhost:3333/example", Example.PROTOCOL, "echo",
                 "{\"message\": \"Test Message\"}");
-        assertThat(response.toString()).isEqualTo("Test Message");
+        assertThat(response).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

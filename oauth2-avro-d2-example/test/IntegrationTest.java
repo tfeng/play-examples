@@ -175,10 +175,10 @@ public class IntegrationTest extends AbstractSpringTest {
             new TransceiverWithAuthorization(new URL("http://localhost:" + port + "/example"),
                 userAccessToken);
         Example example = AvroPlugin.client(Example.class, transceiver);
-        assertThat(example.echo("Test Message").toString()).isEqualTo("Test Message");
+        assertThat(example.echo("Test Message")).isEqualTo("Test Message");
 
         ExampleClient exampleClient = AvroPlugin.client(ExampleClient.class, transceiver);
-        assertThat(exampleClient.echo("Test Message").get(TIMEOUT).toString()).isEqualTo("Test Message");
+        assertThat(exampleClient.echo("Test Message").get(TIMEOUT)).isEqualTo("Test Message");
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

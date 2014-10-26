@@ -1,3 +1,24 @@
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Properties;
+
+import kafka.server.KafkaConfig;
+import kafka.server.KafkaServerStartable;
+import me.tfeng.play.kafka.KafkaUtils;
+import me.tfeng.play.spring.SpringGlobalSettings;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.zookeeper.server.ServerCnxnFactory;
+import org.apache.zookeeper.server.ZooKeeperServer;
+import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+
+import play.Application;
+import play.Logger;
+import play.Logger.ALogger;
+
 /**
  * Copyright 2014 Thomas Feng
  *
@@ -18,25 +39,6 @@
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.Properties;
-
-import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.spring.SpringGlobalSettings;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.zookeeper.server.ServerCnxnFactory;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
-
-import play.Application;
-import play.Logger;
-import play.Logger.ALogger;
-
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
@@ -46,17 +48,19 @@ public class Global extends SpringGlobalSettings {
 
   private ServerCnxnFactory cnxnFactory;
 
+  private KafkaServerStartable kafkaServer;
+
   private ZooKeeperServer zkServer;
 
   @Override
   public void beforeStart(Application application) {
     try {
-      Properties properties = new Properties();
+      Properties zkProperties = new Properties();
       InputStream propertiesStream = getClass().getClassLoader().getResourceAsStream("zoo.cfg");
-      properties.load(propertiesStream);
+      zkProperties.load(propertiesStream);
 
       QuorumPeerConfig quorumConfig = new QuorumPeerConfig();
-      quorumConfig.parseProperties(properties);
+      quorumConfig.parseProperties(zkProperties);
 
       zkServer = new ZooKeeperServer();
       zkServer.setTickTime(quorumConfig.getTickTime());
@@ -82,6 +86,16 @@ public class Global extends SpringGlobalSettings {
       cnxnFactory = ServerCnxnFactory.createFactory();
       cnxnFactory.configure(quorumConfig.getClientPortAddress(), quorumConfig.getMaxClientCnxns());
       cnxnFactory.startup(zkServer);
+
+      Properties kafkaProperties = new Properties();
+      propertiesStream = getClass().getClassLoader().getResourceAsStream("server.properties");
+      kafkaProperties.load(propertiesStream);
+      KafkaConfig kafkaConfig = new KafkaConfig(kafkaProperties);
+      kafkaServer = new KafkaServerStartable(kafkaConfig);
+      kafkaServer.startup();
+
+      int port = Integer.parseInt(zkProperties.getProperty("clientPort"));
+      KafkaUtils.createTopic("localhost:" + port, "kafka-example", 1, 1);
     } catch (Exception e) {
       throw new RuntimeException("Unable to start ZooKeeper server", e);
     }
@@ -89,7 +103,7 @@ public class Global extends SpringGlobalSettings {
 
   @Override
   public void onStop(Application application) {
-    AvroD2Plugin.getInstance().stopServers();
+    kafkaServer.shutdown();
     cnxnFactory.shutdown();
     zkServer.shutdown();
   }

@@ -49,7 +49,7 @@ public class Global extends OAuth2GlobalSettings {
   private ZooKeeperServer zkServer;
 
   @Override
-  public void beforeStart(Application app) {
+  public void beforeStart(Application application) {
     try {
       Properties properties = new Properties();
       InputStream propertiesStream = getClass().getClassLoader().getResourceAsStream("zoo.cfg");
@@ -88,7 +88,7 @@ public class Global extends OAuth2GlobalSettings {
   }
 
   @Override
-  public void onStop(Application app) {
+  public void onStop(Application application) {
     AvroD2Plugin.getInstance().stopServers();
     cnxnFactory.shutdown();
     zkServer.shutdown();
