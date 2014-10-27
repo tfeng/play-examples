@@ -37,7 +37,7 @@ connecting to: localhost:27017/test
 
 Run the example with ```activator run```.
 
-#### Manual Testing
+#### Manual testing
 
 The example is similar to [avro-example](https://github.com/tfeng/play-examples/blob/master/avro-example/). It computes k-nearest points from a given point.
 

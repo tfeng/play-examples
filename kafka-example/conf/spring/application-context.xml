@@ -20,7 +20,13 @@
     <entry key="controllers.protocols.Message" value-ref="messageImpl" />
   </util:map>
 
-  <bean id="kafka-plugin.producer-properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  <bean id="kafka-plugin.consumer-properties"
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="location" value="consumer.properties" />
+  </bean>
+
+  <bean id="kafka-plugin.producer-properties"
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="location" value="producer.properties" />
   </bean>
 

@@ -51,6 +51,7 @@ public class Global extends SpringGlobalSettings {
   @Override
   public void beforeStart(Application application) {
     try {
+      // Initialize ZooKeeper.
       Properties properties = new Properties();
       InputStream propertiesStream = getClass().getClassLoader().getResourceAsStream("zoo.cfg");
       properties.load(propertiesStream);

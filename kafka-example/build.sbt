@@ -13,3 +13,5 @@ libraryDependencies ++= Seq(
 )
 
 Avro.settings
+
+fork in Test := false

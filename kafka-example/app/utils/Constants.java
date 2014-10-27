@@ -18,11 +18,12 @@
  * limitations under the License.
  */
 
-import me.tfeng.play.spring.SpringGlobalSettings;
+package utils;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-public class Global extends SpringGlobalSettings {
+public class Constants {
 
+  public static final String TOPIC = "kafka-example";
 }

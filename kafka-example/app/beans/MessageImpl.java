@@ -20,21 +20,28 @@
 
 package beans;
 
-import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
+import me.tfeng.play.avro.AvroHelper;
 import me.tfeng.play.plugins.KafkaPlugin;
 
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.EncoderFactory;
-import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import play.Logger;
 import play.Logger.ALogger;
+import play.mvc.Controller;
+import play.mvc.Http.Request;
+import utils.Constants;
+
+import com.google.common.collect.Maps;
+
 import controllers.protocols.Message;
+import controllers.protocols.RequestHeader;
 import controllers.protocols.UserMessage;
 
 /**
@@ -45,32 +52,35 @@ public class MessageImpl implements Message {
 
   private static final ALogger LOG = Logger.of(MessageImpl.class);
 
-  private final EncoderFactory encoderFactory = EncoderFactory.get();
-
-  private final SpecificDatumWriter<UserMessage> eventWriter =
-      new SpecificDatumWriter<>(UserMessage.SCHEMA$);
-
   private Producer<byte[], byte[]> producer;
 
   @Override
-  public void send(UserMessage message) {
-    LOG.info("Sending message to Kafka: " + message);
+  public Void send(UserMessage message) {
+    if (producer == null) {
+      producer = KafkaPlugin.getInstance().createProducer();
+    }
+
+    Request request = Controller.request();
+    Map<String, List<String>> query =
+        Maps.transformValues(request.queryString(), value -> Arrays.asList(value));
+    RequestHeader header = RequestHeader.newBuilder()
+        .setRemoteAddress(request.remoteAddress())
+        .setHost(request.host())
+        .setMethod(request.method())
+        .setPath(request.path())
+        .setQuery(query)
+        .setSecure(request.secure())
+        .setTimestamp(new Date().getTime())
+        .build();
+    message.setRequestHeader(header);
+
+    LOG.info("Producing message: " + message);
 
     try {
-      if (producer == null) {
-        producer = KafkaPlugin.getInstance().createProducer();
-      }
-
       byte[] key = message.getSubject().getBytes("UTF-8");
-
-      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      BinaryEncoder binaryEncoder = encoderFactory.binaryEncoder(stream, null);
-      eventWriter.write(message, binaryEncoder);
-      binaryEncoder.flush();
-      IOUtils.closeQuietly(stream);
-      byte[] value = stream.toByteArray();
-
-      producer.send(new KeyedMessage<byte[], byte[]>("kafka-example", key, value));
+      byte[] value = AvroHelper.encodeRecord(message);
+      producer.send(new KeyedMessage<byte[], byte[]>(Constants.TOPIC, key, value));
+      return null;
     } catch (Exception e) {
       throw new RuntimeException("Unable to send Kafka event for message: " + message, e);
     }
