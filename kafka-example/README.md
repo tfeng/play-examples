@@ -14,7 +14,7 @@ Kafka is fault-tolerant. The messages may be parititioned. Multiple copies may e
 
 This example is a simple use case of Kafka. An IPC (inter-process communication) server is set up to receive user inputs with either Avro binary protocol or Avro Json protocol (see [avro-plugin](https://github.com/tfeng/play-examples/tree/master/avro-example) for more information on Avro IPC). When the user issues a request to the server, the request data is sent in a Kafka event. A consumer in the example consumes the message, and prints it out to the console.
 
-#### Manual Testing
+#### Manual testing
 
 Run with ```activator run```.
 
@@ -23,7 +23,7 @@ When the application is started, it first creates a ZooKeeper server and a Kafka
 The user may issue a request and observe a Kafka event being logged in the console of the server.
 
 ```bash
-curl -X POST -H "Content-Type: avro/json" -d '{"message": {"subject": "Raymond", "action": "reads", "object": "books"}}' http://localhost:9000/message/send
+$ curl -X POST -H "Content-Type: avro/json" -d '{"message": {"subject": "Raymond", "action": "reads", "object": "books"}}' http://localhost:9000/message/send
 null
 ```
 
