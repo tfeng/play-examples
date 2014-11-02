@@ -27,7 +27,6 @@ import java.util.Map;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
-import me.tfeng.play.avro.AvroHelper;
 import me.tfeng.play.plugins.KafkaPlugin;
 
 import org.springframework.stereotype.Component;
@@ -52,7 +51,7 @@ public class MessageImpl implements Message {
 
   private static final ALogger LOG = Logger.of(MessageImpl.class);
 
-  private Producer<byte[], byte[]> producer;
+  private Producer<String, UserMessage> producer;
 
   @Override
   public Void send(UserMessage message) {
@@ -77,9 +76,8 @@ public class MessageImpl implements Message {
     LOG.info("Producing message: " + message);
 
     try {
-      byte[] key = message.getSubject().getBytes("UTF-8");
-      byte[] value = AvroHelper.encodeRecord(message);
-      producer.send(new KeyedMessage<byte[], byte[]>(Constants.TOPIC, key, value));
+      producer.send(new KeyedMessage<String, UserMessage>(Constants.TOPIC, message.getSubject(),
+          message));
       return null;
     } catch (Exception e) {
       throw new RuntimeException("Unable to send Kafka event for message: " + message, e);

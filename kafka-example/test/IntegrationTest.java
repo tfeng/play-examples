@@ -1,27 +1,3 @@
-import static org.fest.assertions.Assertions.assertThat;
-import static play.test.Helpers.running;
-import static play.test.Helpers.testServer;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Properties;
-
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
-import me.tfeng.play.avro.AvroHelper;
-import me.tfeng.play.plugins.AvroPlugin;
-
-import org.junit.Test;
-
-import utils.Constants;
-import controllers.protocols.MessageClient;
-import controllers.protocols.UserMessage;
-
 /**
  * Copyright 2014 Thomas Feng
  *
@@ -41,6 +17,31 @@ import controllers.protocols.UserMessage;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import static org.fest.assertions.Assertions.assertThat;
+import static play.test.Helpers.running;
+import static play.test.Helpers.testServer;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Properties;
+
+import kafka.consumer.Consumer;
+import kafka.consumer.ConsumerConfig;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
+import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.serializer.StringDecoder;
+import me.tfeng.play.kafka.AvroDecoder;
+import me.tfeng.play.plugins.AvroPlugin;
+
+import org.junit.Test;
+
+import utils.Constants;
+import controllers.protocols.MessageClient;
+import controllers.protocols.UserMessage;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
@@ -62,19 +63,19 @@ public class IntegrationTest {
 
         ConsumerConnector consumer =
             Consumer.createJavaConsumerConnector(new ConsumerConfig(consumerProperties));
-        KafkaStream<byte[], byte[]> streams =
-            consumer.createMessageStreams(Collections.singletonMap(Constants.TOPIC, 1))
-                .get(Constants.TOPIC).get(0);
+        KafkaStream<String, UserMessage> stream = consumer.createMessageStreams(
+            Collections.singletonMap(Constants.TOPIC, 1), new StringDecoder(null),
+            new AvroDecoder<>(UserMessage.class)).get(Constants.TOPIC).get(0);
 
         MessageClient client =
             AvroPlugin.client(MessageClient.class, new URL("http://localhost:3333/message"));
         client.send(UserMessage.newBuilder().setSubject("Raymond").setAction("reads")
             .setObject("books").setRequestHeader(null).build()).get(TIMEOUT);
 
-        ConsumerIterator<byte[], byte[]> iterator = streams.iterator();
+        ConsumerIterator<String, UserMessage> iterator = stream.iterator();
         assertThat(iterator.hasNext()).isTrue();
 
-        UserMessage message = AvroHelper.decodeRecord(UserMessage.class, iterator.next().message());
+        UserMessage message = iterator.next().message();
         assertThat(message.getSubject()).isEqualTo("Raymond");
         assertThat(message.getAction()).isEqualTo("reads");
         assertThat(message.getObject()).isEqualTo("books");
