@@ -26,9 +26,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 
-import kafka.server.KafkaConfig;
-import kafka.server.KafkaServerStartable;
-import me.tfeng.play.kafka.KafkaUtils;
 import me.tfeng.play.spring.Startable;
 
 import org.apache.commons.io.FileUtils;
@@ -40,21 +37,16 @@ import org.springframework.stereotype.Component;
 
 import play.Logger;
 import play.Logger.ALogger;
-import utils.Constants;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@Component("system")
+@Component
 public class SystemStartable implements Startable {
 
   private static final ALogger LOG = Logger.of(SystemStartable.class);
 
   private ServerCnxnFactory cnxnFactory;
-
-  private File kafkaDirectory;
-
-  private KafkaServerStartable kafkaServer;
 
   private File zkDirectory;
 
@@ -63,12 +55,12 @@ public class SystemStartable implements Startable {
   @Override
   public void onStart() throws Throwable {
     // Initialize ZooKeeper.
-    Properties zkProperties = new Properties();
+    Properties properties = new Properties();
     InputStream propertiesStream = getClass().getClassLoader().getResourceAsStream("zoo.cfg");
-    zkProperties.load(propertiesStream);
+    properties.load(propertiesStream);
 
     QuorumPeerConfig quorumConfig = new QuorumPeerConfig();
-    quorumConfig.parseProperties(zkProperties);
+    quorumConfig.parseProperties(properties);
 
     zkServer = new ZooKeeperServer();
     zkServer.setTickTime(quorumConfig.getTickTime());
@@ -83,34 +75,12 @@ public class SystemStartable implements Startable {
     cnxnFactory = ServerCnxnFactory.createFactory();
     cnxnFactory.configure(quorumConfig.getClientPortAddress(), quorumConfig.getMaxClientCnxns());
     cnxnFactory.startup(zkServer);
-
-    // Initialize Kafka server
-    kafkaDirectory = Files.createTempDirectory("kafka").toFile();
-    LOG.info("Using Kafka directory: " + kafkaDirectory);
-    Properties kafkaProperties = new Properties();
-    propertiesStream = getClass().getClassLoader().getResourceAsStream("server.properties");
-    kafkaProperties.load(propertiesStream);
-    kafkaProperties.setProperty("log.dirs", kafkaDirectory.getAbsolutePath());
-    KafkaConfig kafkaConfig = new KafkaConfig(kafkaProperties);
-    kafkaServer = new KafkaServerStartable(kafkaConfig);
-    kafkaServer.startup();
-
-    // Create Kafka topic.
-    int port = Integer.parseInt(zkProperties.getProperty("clientPort"));
-    KafkaUtils.createTopic("localhost:" + port, Constants.TOPIC, 1, 1);
   }
 
   @Override
   public void onStop() throws Throwable {
-    kafkaServer.shutdown();
     cnxnFactory.shutdown();
     zkServer.shutdown();
-
-    try {
-      FileUtils.deleteDirectory(kafkaDirectory);
-    } catch (IOException e) {
-      LOG.warn("Unable to delete Kafka directory: " + kafkaDirectory, e);
-    }
 
     try {
       FileUtils.deleteDirectory(zkDirectory);

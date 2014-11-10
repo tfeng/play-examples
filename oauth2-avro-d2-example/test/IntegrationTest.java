@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import me.tfeng.play.http.PostRequestPreparer;
+import me.tfeng.play.plugins.AvroD2Plugin;
 import me.tfeng.play.plugins.AvroPlugin;
 import me.tfeng.play.spring.test.AbstractSpringTest;
 
@@ -52,6 +53,12 @@ import controllers.protocols.ExampleClient;
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 public class IntegrationTest extends AbstractSpringTest {
+
+  private void waitForD2Registration() throws InterruptedException {
+    while (!AvroD2Plugin.getInstance().isRegistered(Example.class)) {
+      Thread.sleep(100);
+    }
+  }
 
   private static class TransceiverWithAuthorization extends AsyncHttpTransceiver {
 
@@ -109,6 +116,8 @@ public class IntegrationTest extends AbstractSpringTest {
   public void testD2Request() {
     running(testServer(port), () -> {
       try {
+        waitForD2Registration();
+
         WSResponse response;
 
         response = authenticateClient(trustedClientId, trustedClientSecret);
@@ -131,6 +140,7 @@ public class IntegrationTest extends AbstractSpringTest {
   public void testD2RequestMissingAuthorization() {
     running(testServer(port), () -> {
       try {
+        waitForD2Registration();
         WSResponse response = WS.url("http://localhost:" + port + "/proxy")
             .setQueryParameter("message", "Test Message through Client").get().get(TIMEOUT);
         assertThat(response.getStatus()).isEqualTo(401);
@@ -144,6 +154,8 @@ public class IntegrationTest extends AbstractSpringTest {
   public void testD2RequestWrongAuthorization() {
     running(testServer(port), () -> {
       try {
+        waitForD2Registration();
+
         WSResponse response;
 
         response = authenticateClient(trustedClientId, trustedClientSecret);

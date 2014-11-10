@@ -24,6 +24,7 @@ import static play.test.Helpers.testServer;
 
 import java.net.URL;
 
+import me.tfeng.play.plugins.AvroD2Plugin;
 import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.apache.avro.ipc.HttpTransceiver;
@@ -49,6 +50,9 @@ public class IntegrationTest extends AbstractSpringTest {
   public void testD2Request() {
     running(testServer(port), () -> {
       try {
+        while (!AvroD2Plugin.getInstance().isRegistered(Example.class)) {
+          Thread.sleep(100);
+        }
         WSResponse response = WS.url("http://localhost:" + port + "/proxy")
             .setQueryParameter("message", "Test Message through Client").get().get(TIMEOUT);
         assertThat(response.getBody()).isEqualTo("Test Message through Client");
