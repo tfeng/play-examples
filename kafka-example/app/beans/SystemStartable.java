@@ -103,15 +103,15 @@ public class SystemStartable implements Startable {
   @Override
   public void onStop() throws Throwable {
     kafkaServer.shutdown();
-    cnxnFactory.shutdown();
-    zkServer.shutdown();
-
+    kafkaServer.awaitShutdown();
     try {
       FileUtils.deleteDirectory(kafkaDirectory);
     } catch (IOException e) {
       LOG.warn("Unable to delete Kafka directory: " + kafkaDirectory, e);
     }
 
+    cnxnFactory.shutdown();
+    zkServer.shutdown();
     try {
       FileUtils.deleteDirectory(zkDirectory);
     } catch (IOException e) {

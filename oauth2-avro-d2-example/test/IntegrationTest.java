@@ -79,17 +79,6 @@ public class IntegrationTest extends AbstractSpringTest {
         builder.setHeader("Authorization", "Bearer " + authorizationToken);
       });
     }
-
-    @Override
-    public List<ByteBuffer> transceive(List<ByteBuffer> request,
-        PostRequestPreparer postRequestPreparer) throws IOException {
-      return super.transceive(request, (builder, contentType, url) -> {
-        if (postRequestPreparer != null) {
-          postRequestPreparer.prepare(builder, contentType, url);
-        }
-        builder.setHeader("Authorization", "Bearer " + authorizationToken);
-      });
-    }
   }
 
   private static final int TIMEOUT = Integer.MAX_VALUE;
