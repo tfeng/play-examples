@@ -7,16 +7,16 @@ import java.util.PriorityQueue;
 
 import me.tfeng.play.mongodb.RecordConverter;
 
+import org.bson.Document;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 import controllers.protocols.KTooLargeError;
 import controllers.protocols.Point;
@@ -45,7 +45,7 @@ public class PointsImpl implements InitializingBean, Points {
     }
   }
 
-  private DBCollection collection;
+  private MongoCollection<Document> collection;
 
   @Value("${mongodb-example.db-collection}")
   private String dbCollection;
@@ -60,14 +60,15 @@ public class PointsImpl implements InitializingBean, Points {
 
   @Override
   public Void addPoint(Point point) {
-    DBCollection collection = mongoClient.getDB(dbName).getCollection(dbCollection);
-    collection.insert(RecordConverter.toDbObject(point));
+    MongoCollection<Document> collection =
+        mongoClient.getDatabase(dbName).getCollection(dbCollection);
+    collection.insertOne(RecordConverter.toDocument(point));
     return null;
   }
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    collection = mongoClient.getDB(dbName).getCollection(dbCollection);
+    collection = mongoClient.getDatabase(dbName).getCollection(dbCollection);
     startTime = System.currentTimeMillis();
     clear();
   }
@@ -83,9 +84,9 @@ public class PointsImpl implements InitializingBean, Points {
       throw KTooLargeError.newBuilder().setValue("k is too large").setK(k).build();
     }
 
-    DBCursor cursor = collection.find();
+    FindIterable<Document> cursor = collection.find();
     PriorityQueue<Point> queue = new PriorityQueue<>(new DescendingPointComparator(from));
-    for (DBObject object : cursor) {
+    for (Document object : cursor) {
       Point point = RecordConverter.toRecord(Point.class, object);
       queue.add(point);
       if (queue.size() > k) {

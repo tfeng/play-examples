@@ -7,7 +7,7 @@ lazy val root = project in file(".") enablePlugins(PlayJava)
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   javaWs % "test",
-  "me.tfeng.play-plugins" % "spring-test" % "0.3.8-SNAPSHOT" % "test"
+  "me.tfeng.play-plugins" % "spring-test" % "0.3.9" % "test"
 )
 
 AvroD2.settings
