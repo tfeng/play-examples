@@ -28,6 +28,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 
+import org.junit.Test;
+
+import controllers.protocols.MessageClient;
+import controllers.protocols.UserMessage;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
@@ -36,12 +40,7 @@ import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.StringDecoder;
 import me.tfeng.play.kafka.AvroDecoder;
 import me.tfeng.play.plugins.AvroPlugin;
-
-import org.junit.Test;
-
 import utils.Constants;
-import controllers.protocols.MessageClient;
-import controllers.protocols.UserMessage;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

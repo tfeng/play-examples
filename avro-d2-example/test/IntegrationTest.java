@@ -24,17 +24,16 @@ import static play.test.Helpers.testServer;
 
 import java.net.URL;
 
-import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.spring.test.AbstractSpringTest;
-
 import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
+import controllers.protocols.Example;
+import me.tfeng.play.plugins.AvroD2Plugin;
+import me.tfeng.play.spring.test.AbstractSpringTest;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
-import controllers.protocols.Example;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

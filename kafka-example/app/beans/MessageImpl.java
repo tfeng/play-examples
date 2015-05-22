@@ -25,23 +25,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import me.tfeng.play.plugins.KafkaPlugin;
-
 import org.springframework.stereotype.Component;
-
-import play.Logger;
-import play.Logger.ALogger;
-import play.mvc.Controller;
-import play.mvc.Http.Request;
-import utils.Constants;
 
 import com.google.common.collect.Maps;
 
 import controllers.protocols.Message;
 import controllers.protocols.RequestHeader;
 import controllers.protocols.UserMessage;
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import me.tfeng.play.plugins.KafkaPlugin;
+import play.Logger;
+import play.Logger.ALogger;
+import play.mvc.Controller;
+import play.mvc.Http.Request;
+import utils.Constants;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

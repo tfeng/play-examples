@@ -5,9 +5,9 @@ version := "1.0.0-SNAPSHOT"
 lazy val root = project in file(".") enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
-  "me.tfeng.play-plugins" % "mongodb-plugin" % "0.3.9",
+  "me.tfeng.play-plugins" % "mongodb-plugin" % "0.4.0-SNAPSHOT",
   javaWs % "test",
-  "me.tfeng.play-plugins" % "spring-test" % "0.3.9" % "test"
+  "me.tfeng.play-plugins" % "spring-test" % "0.4.0-SNAPSHOT" % "test"
 )
 
 Avro.settings

@@ -20,19 +20,18 @@
 
 package controllers;
 
-import me.tfeng.play.avro.BinaryIpcController;
-import me.tfeng.play.plugins.AvroD2Plugin;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import controllers.protocols.Example;
+import controllers.protocols.ExampleClient;
+import me.tfeng.play.avro.BinaryIpcController;
+import me.tfeng.play.plugins.AvroD2Plugin;
 import play.libs.F.Promise;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.protocols.Example;
-import controllers.protocols.ExampleClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

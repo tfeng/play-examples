@@ -25,15 +25,14 @@ import static play.test.Helpers.testServer;
 import java.math.BigInteger;
 import java.util.List;
 
-import me.tfeng.play.avro.AvroHelper;
-import me.tfeng.play.spring.test.AbstractSpringTest;
-
 import org.junit.Test;
 
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
 import controllers.protocols.Point;
 import controllers.protocols.Points;
+import me.tfeng.play.avro.AvroHelper;
+import me.tfeng.play.spring.test.AbstractSpringTest;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

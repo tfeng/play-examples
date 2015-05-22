@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import me.tfeng.play.mongodb.RecordConverter;
-
 import org.bson.Document;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import com.mongodb.client.MongoCollection;
 import controllers.protocols.KTooLargeError;
 import controllers.protocols.Point;
 import controllers.protocols.Points;
+import me.tfeng.play.mongodb.RecordConverter;
 
 @Component("points")
 public class PointsImpl implements InitializingBean, Points {

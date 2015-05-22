@@ -24,12 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import me.tfeng.play.security.oauth2.Authentication;
-import me.tfeng.play.security.oauth2.AuthenticationError;
-import me.tfeng.play.security.oauth2.AuthenticationManager;
-import me.tfeng.play.security.oauth2.ClientAuthentication;
-import me.tfeng.play.security.oauth2.UserAuthentication;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +34,12 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
+
+import me.tfeng.play.security.oauth2.Authentication;
+import me.tfeng.play.security.oauth2.AuthenticationError;
+import me.tfeng.play.security.oauth2.AuthenticationManager;
+import me.tfeng.play.security.oauth2.ClientAuthentication;
+import me.tfeng.play.security.oauth2.UserAuthentication;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

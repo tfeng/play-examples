@@ -21,10 +21,10 @@
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
-import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.junit.Test;
 
+import me.tfeng.play.spring.test.AbstractSpringTest;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 

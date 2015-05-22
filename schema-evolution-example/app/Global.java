@@ -18,30 +18,11 @@
  * limitations under the License.
  */
 
-package beans;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import me.tfeng.play.mongodb.OplogItem;
-import me.tfeng.play.mongodb.OplogItemHandler;
-import play.Logger;
-import play.Logger.ALogger;
+import me.tfeng.play.spring.SpringGlobalSettings;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
-@Component
-public class StatusReporter implements OplogItemHandler {
+public class Global extends SpringGlobalSettings {
 
-  private static final ALogger LOG = Logger.of(StatusReporter.class);
-
-  @Autowired
-  private PointsImpl points;
-
-  @Override
-  public void handle(OplogItem oplogItem) {
-    LOG.info("Storage status: " + points.countPoints() + " points; "
-        + String.format("%.3f", points.calculatePointsPerSecond()) + " points/sec");
-  }
 }

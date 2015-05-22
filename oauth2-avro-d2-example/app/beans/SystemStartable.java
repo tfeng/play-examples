@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 
-import me.tfeng.play.spring.Startable;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
@@ -35,6 +33,7 @@ import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.springframework.stereotype.Component;
 
+import me.tfeng.play.spring.Startable;
 import play.Logger;
 import play.Logger.ALogger;
 

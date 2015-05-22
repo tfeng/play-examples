@@ -1,4 +1,4 @@
-name := "avro-d2-example"
+name := "schema-evolution-example"
 
 version := "1.0.0-SNAPSHOT"
 
@@ -6,9 +6,11 @@ lazy val root = project in file(".") enablePlugins(PlayJava)
 
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
+  "com.google.guava" % "guava" % "18.0",
   javaWs % "test",
   "me.tfeng.play-plugins" % "spring-test" % "0.4.0-SNAPSHOT" % "test"
 )
 
-AvroD2.settings
+unmanagedResourceDirectories in Compile <+= baseDirectory / "protocols"
 
+AvroD2.settings

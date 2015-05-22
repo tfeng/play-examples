@@ -20,11 +20,11 @@
 
 package controllers;
 
+import controllers.protocols.ExampleClient;
 import me.tfeng.play.plugins.AvroD2Plugin;
 import play.libs.F.Promise;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.protocols.ExampleClient;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

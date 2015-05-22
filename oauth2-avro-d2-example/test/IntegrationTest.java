@@ -23,42 +23,33 @@ import static org.fest.assertions.Fail.fail;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
-
-import me.tfeng.play.http.PostRequestPreparer;
-import me.tfeng.play.plugins.AvroD2Plugin;
-import me.tfeng.play.plugins.AvroPlugin;
-import me.tfeng.play.spring.test.AbstractSpringTest;
 
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.ipc.AsyncHttpTransceiver;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
-import play.libs.F.Promise;
-import play.libs.Json;
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 
 import controllers.protocols.Example;
 import controllers.protocols.ExampleClient;
+import me.tfeng.play.http.PostRequestPreparer;
+import me.tfeng.play.plugins.AvroD2Plugin;
+import me.tfeng.play.plugins.AvroPlugin;
+import me.tfeng.play.spring.test.AbstractSpringTest;
+import play.libs.F.Promise;
+import play.libs.Json;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)
  */
 public class IntegrationTest extends AbstractSpringTest {
-
-  private void waitForD2Registration() throws InterruptedException {
-    while (!AvroD2Plugin.getInstance().isRegistered(Example.class)) {
-      Thread.sleep(100);
-    }
-  }
 
   private static class TransceiverWithAuthorization extends AsyncHttpTransceiver {
 
@@ -80,24 +71,17 @@ public class IntegrationTest extends AbstractSpringTest {
       });
     }
   }
-
   private static final int TIMEOUT = Integer.MAX_VALUE;
-
   @Value("${avro-d2-plugin.server-port}")
   private int port;
-
   @Value("${security.trusted.client.id}")
   private String trustedClientId;
-
   @Value("${security.trusted.client.secret}")
   private String trustedClientSecret;
-
   @Value("${security.untrusted.client.id}")
   private String untrustedClientId;
-
   @Value("${security.untrusted.client.secret}")
   private String untrustedClientSecret;
-
   @Value("${security.user.password}")
   private String userPassword;
 
@@ -253,5 +237,11 @@ public class IntegrationTest extends AbstractSpringTest {
         "password", request.textNode(password)));
     return WS.url("http://localhost:" + port + "/user/authenticate")
         .setHeader("Authorization", "Bearer " + clientAccessToken).post(request).get(TIMEOUT);
+  }
+
+  private void waitForD2Registration() throws InterruptedException {
+    while (!AvroD2Plugin.getInstance().isRegistered(Example.class)) {
+      Thread.sleep(100);
+    }
   }
 }

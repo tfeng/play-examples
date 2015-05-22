@@ -28,9 +28,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import me.tfeng.play.plugins.AvroPlugin;
-import me.tfeng.play.spring.test.AbstractSpringTest;
-
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
@@ -41,8 +38,6 @@ import org.apache.avro.ipc.Ipc;
 import org.apache.avro.ipc.generic.GenericRequestor;
 import org.junit.Test;
 
-import play.libs.F.Promise;
-
 import com.google.common.collect.ImmutableList;
 
 import controllers.protocols.Example;
@@ -51,6 +46,9 @@ import controllers.protocols.KTooLargeError;
 import controllers.protocols.Point;
 import controllers.protocols.Points;
 import controllers.protocols.PointsClient;
+import me.tfeng.play.plugins.AvroPlugin;
+import me.tfeng.play.spring.test.AbstractSpringTest;
+import play.libs.F.Promise;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

@@ -25,20 +25,19 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
+
+import controllers.protocols.UserMessage;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import me.tfeng.play.avro.AvroHelper;
 import me.tfeng.play.plugins.KafkaPlugin;
 import me.tfeng.play.spring.Startable;
-
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
-
 import play.Logger;
 import play.Logger.ALogger;
 import utils.Constants;
-import controllers.protocols.UserMessage;
 
 /**
  * @author Thomas Feng (huining.feng@gmail.com)

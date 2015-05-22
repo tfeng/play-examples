@@ -1,5 +1,8 @@
 #!/bin/sh
 
 for dir in *-example; do
-  (cd $dir; activator $@) || exit 1
+  if ! (cd $dir; activator $@); then
+    echo "Test(s) failed in $dir"
+    exit 1
+  fi
 done
