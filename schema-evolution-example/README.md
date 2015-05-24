@@ -7,29 +7,29 @@ An example to demonstrate how schema evolution is handled between a client and a
 
 #### Design
 
-[Avro specification](https://avro.apache.org/docs/current/spec.html) defines how schemas may evolve in a backward-compatible way. If the change from an old version of the schema to a new version is backward compatible, one may use the new version of the schema to decode the data encoded with the old version.
+[Avro specification](https://avro.apache.org/docs/current/spec.html) defines how schemas may evolve in a backward-compatible way. If the change from an old version of the schema to a new version is backward compatible, one may use the new version of the schema to decode the data encoded with the old version, and rules may be applied to upgrade or downgrade the data between versions.
 
-This also applies to Avro IPC (inter-process communication), where the request and response between a client and a server are encoded in Avro records. As long as the server can decode the request from the client and can encode the responde in a format that the client can understand, then proper communication may happen between them, even if they are using different versions of the schema.
+This also applies to Avro IPC (inter-process communication), where the request and response between a client and a service are encoded in Avro records. As long as the service can decode the request from the client and upgrade it to the service version, and the client can decode the response from the service and downgrade it to the client version, proper communication may happen between them, even if the client is using an older version of the IPC protocol.
 
-##### ZooKeeper
+##### Data in ZooKeeper
 
-The design of schema evolution in IPC leverages the infrastructure underlying the [Play Avro D2 plugin](https://github.com/tfeng/play-plugins/tree/master/avro-d2-plugin), an example of which can be found [here](https://github.com/tfeng/play-examples/tree/master/avro-d2-example). To recap, Avro D2 utilizes [ZooKeeper](http://zookeeper.apache.org/) as a service registry, which allows clients to dynamically discover (hence the acronym "D2") addresses of a server that can service a request. In the scenario of schema evolution, ZooKeeper is also utilized as the schema repository, where different versions of a schema may be stored and be referenced in a concise way (by using the full name of the schema as well as the MD5 of the schema itself).
+The design of schema evolution in IPC leverages the infrastructure underlying the [Play Avro D2 plugin](https://github.com/tfeng/play-plugins/tree/master/avro-d2-plugin) (an example of which can be found [here](https://github.com/tfeng/play-examples/tree/master/avro-d2-example)). To recap, Avro D2 utilizes [ZooKeeper](http://zookeeper.apache.org/) as a service registry, which allows clients to dynamically discover (hence the acronym "D2") addresses of a service for a request. In the scenario of schema evolution, ZooKeeper is also utilized as the schema repository, where different versions of a protocol may be stored and be referenced in a concise way (by using the full name of the protocol as well as the MD5 of the protocol schema).
 
 ##### Request flow
 
-Overall, the idea can be captured in this flow of operations:
+The idea can be captured in this flow of operations:
 
-1. When the server starts, it registers itself in the server registry in ZooKeeper for potential clients to discover it. Technically, it stores the URI to its service endpoint(s) in ```/protocols/<protocol>/servers/<id>```, where ```<protocol>``` is the full name of the protocol that one of its endpoint supports, and ```<id>``` is a system-generated identifier (which has no importance). It also stores tne schema of the current version of the protocol in ```/protocols/<protocol>/versions/<md5>```, where ```<protocol>``` is the same full name of the protocol, and ```<md5>``` is the MD5 checksum of the current version of that protocol.
-2. Before a client makes a request to the server, it stores its own version of the protocol in ```/protocols/<protocol>/versions/<md5>``` in ZooKeeper. This version need not be the same as the version that the server is using.
-3. When the client sends the request, the MD5 of the client protocol is encoded in the [handshake request](http://avro.apache.org/docs/current/spec.html#handshake) of the message.
-4. When the server receives the request, it reads the MD5 of the client protocol and compares it against the MD5 of its own protocol. If the two do not match, the server loads the protocol from ZooKeeper and cache it locally thereafter. The server would then decode the request with the client protocol and try to upgrade it to its version. Assuming the server protocol iss more recent and it is backward compatible with the client protocol, this upgrade will be successful.
-5. The server processes the request and produces a response.
-6. If the client protocol is different, the server also downgrades the response before it is sent back to the client.
-7. In the response sent back to the client, there is a handshake response at the beginning of the message. It informs the client of the server protocol, which the client may or may not use in the future.
+1. When the server starts, it registers its service(s) in the service registry in ZooKeeper for potential clients to dynamically discover the service(s). Technically, it stores the URI(s) of its service(s) in ```/protocols/<protocol>/servers/<id>```, where ```<protocol>``` is the full name of the protocol for the service, and ```<id>``` is a sequential number generated by ZooKeeper. It also stores the schema of the current version of the protocol in ```/protocols/<protocol>/versions/<md5>```, where ```<protocol>``` is the same full name of the protocol, and ```<md5>``` is the MD5 checksum of the current version of that protocol.
+2. Before a client makes a request to a service, it stores its own version of the protocol in ```/protocols/<protocol>/versions/<md5>``` in ZooKeeper. This version need not be the same as the version that the server is using.
+3. In the request that the client sends, the MD5 of the client version of the protocol is stored in the [handshake request](http://avro.apache.org/docs/current/spec.html#handshake) of the message.
+4. When the service receives the request, it reads the MD5 of the client protocol and compares it against the MD5 of its own protocol. If the two do not match, the client version of the protocol is loaded from ZooKeeper (and cached thereafter). The service then decodes the request with the client version of the protocol and converts it into its version (by upgrading or downgrading). The conversion would be successful if the two versions of the protocol follow the rules of schema evolution defined in Avro specification.
+5. The service processes the request and produces a result.
+6. The service sends back a response message to the client. The handshake response in the message contains MD5 of the service version of the protocol. Notice that, different from the original Avro IPC protocol, the service protocol is not included in the handshake response, but only the MD5. This is because the service protocol is in ZooKeeper.
+7. When the client receives the response, it decodes the result using the service version of the protocol. If necessary, the client loads the service protocol from ZooKeeper (and caches it thereafter).
 
 ##### Benefit
 
-The benefit of this approach tois that the client and server may continue to use their own versions of the protocol indefinitely, assuming all new version of the protocol is backward compatible with the previous version. There is no need to synchronize the release of the client and the server in order to ensure they communicate using the same version.
+The benefit of this approach is that the client and server may continue to use their own versions of the protocol indefinitely, assuming all new version of the protocol is backward compatible with the previous version. There is no need to synchronize the release of the client and the server in order to ensure they communicate properly. Moreover, the protocol itself is never sent in either the request or the response. Instead, the system relies on ZooKeeper as the schema repository to store all verions of the protocols.
 
 #### Manual testing
 
@@ -49,7 +49,7 @@ $ curl -X POST -H "Content-Type: avro/json" http://localhost:9000/current/countE
 
 Add 3 employees.
 ```
-$ curl -X POST -H "Content-Type: avro/json" -d '{"employee": {"firstName": "Thomas", "lastName": "Feng", "gender: "MALE", "dateOfBirth": {"year": 2000, "month": 1, "day": 1}}}' http://localhost:9000/current/addEmployee
+$ curl -X POST -H "Content-Type: avro/json" -d '{"employee": {"firstName": "Thomas", "lastName": "Feng", "gender": "MALE", "dateOfBirth": {"year": 2000, "month": 1, "day": 1}}}' http://localhost:9000/current/addEmployee
 1
 $ curl -X POST -H "Content-Type: avro/json" -d '{"employee": {"firstName": "Jackson", "lastName": "Wang", "gender": "MALE", "dateOfBirth": {"year": 2001, "month": 5, "day": 15}}}' http://localhost:9000/current/addEmployee
 2
