@@ -11,4 +11,3 @@ libraryDependencies ++= Seq(
 )
 
 AvroD2.settings
-
