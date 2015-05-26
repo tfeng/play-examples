@@ -52,7 +52,7 @@ public class LegacyProtocolController {
       LEGACY_PROTOCOL = Protocol.parse(LegacyProtocolController.class.getResourceAsStream(
           "/legacy/employee_registry.avpr"));
       LEGACY_CLIENT = new AvroD2Client(LEGACY_PROTOCOL);
-      LEGACY_CLIENT.setGeneric(true);
+      LEGACY_CLIENT.setUseGenericRecord(true);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

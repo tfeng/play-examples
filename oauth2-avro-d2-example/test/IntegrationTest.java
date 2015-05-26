@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableMap;
 
 import controllers.protocols.Example;
 import controllers.protocols.ExampleClient;
-import me.tfeng.play.http.IpcRequestPreparer;
+import me.tfeng.play.http.RequestPreparer;
 import me.tfeng.play.plugins.AvroD2Plugin;
 import me.tfeng.play.plugins.AvroPlugin;
 import me.tfeng.play.spring.test.AbstractSpringTest;
@@ -61,11 +61,11 @@ public class IntegrationTest extends AbstractSpringTest {
     }
 
     @Override
-    public Promise<List<ByteBuffer>> asyncTransceive(List<ByteBuffer> request,
-        IpcRequestPreparer postRequestPreparer) {
-      return super.asyncTransceive(request, (builder, contentType, url) -> {
-        if (postRequestPreparer != null) {
-          postRequestPreparer.prepare(builder, contentType, url);
+    public Promise<List<ByteBuffer>> transceive(List<ByteBuffer> request,
+        RequestPreparer requestPreparer) {
+      return super.transceive(request, (builder, contentType, url) -> {
+        if (requestPreparer != null) {
+          requestPreparer.prepare(builder, contentType, url);
         }
         builder.setHeader("Authorization", "Bearer " + authorizationToken);
       });
