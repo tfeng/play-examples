@@ -1,5 +1,9 @@
 play-examples
-=============
+===
+
+**The play-examples project is deprecated. All examples have been migrated to [play-mods-examples](https://github.com/tfeng/play-mods-examples).**
+
+---
 
 List of examples:
 - [avro-example](avro-example): A simple example that demonstrates how to create an Avro IPC server and exchange messages
