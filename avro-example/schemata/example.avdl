@@ -1,4 +1,0 @@
-@namespace("controllers.protocols")
-protocol Example {
-  string echo(string message);
-}
